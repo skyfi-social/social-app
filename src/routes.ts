@@ -67,6 +67,7 @@ export const router = new Router<AllNavigatableRoutes>({
     '/settings/notifications/reposts-on-reposts',
   ActivityNotificationSettings: '/settings/notifications/activity',
   MiscellaneousNotificationSettings: '/settings/notifications/miscellaneous',
+  WalletSettings: '/settings/wallet',
   // support
   Support: '/support',
   PrivacyPolicy: '/support/privacy',

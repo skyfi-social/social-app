@@ -4,6 +4,7 @@ import {useLingui} from '@lingui/react'
 import {type NativeStackScreenProps} from '@react-navigation/native-stack'
 
 import {type CommonNavigatorParams} from '#/lib/routes/types'
+import {useWalletQuery} from '#/lib/wallet/useWallet'
 import {useAppPasswordsQuery} from '#/state/queries/app-passwords'
 import {useSession} from '#/state/session'
 import * as SettingsList from '#/screens/Settings/components/SettingsList'
@@ -12,6 +13,7 @@ import * as Admonition from '#/components/Admonition'
 import {EyeSlash_Stroke2_Corner0_Rounded as EyeSlashIcon} from '#/components/icons/EyeSlash'
 import {Key_Stroke2_Corner2_Rounded as KeyIcon} from '#/components/icons/Key'
 import {ShieldCheck_Stroke2_Corner0_Rounded as ShieldIcon} from '#/components/icons/Shield'
+import {Wallet_Stroke2_Corner2_Rounded as WalletIcon} from '#/components/icons/Wallet'
 import * as Layout from '#/components/Layout'
 import {InlineLinkText} from '#/components/Link'
 import {Email2FAToggle} from './components/Email2FAToggle'
@@ -26,6 +28,7 @@ export function PrivacyAndSecuritySettingsScreen({}: Props) {
   const t = useTheme()
   const {data: appPasswords} = useAppPasswordsQuery()
   const {currentAccount} = useSession()
+  const {data: walletData} = useWalletQuery(currentAccount?.did)
 
   return (
     <Layout.Screen>
@@ -69,6 +72,15 @@ export function PrivacyAndSecuritySettingsScreen({}: Props) {
               <SettingsList.BadgeText>
                 {appPasswords.length}
               </SettingsList.BadgeText>
+            )}
+          </SettingsList.LinkItem>
+          <SettingsList.LinkItem to="/settings/wallet" label={_(msg`Wallet`)}>
+            <SettingsList.ItemIcon icon={WalletIcon} />
+            <SettingsList.ItemText>
+              <Trans>Wallet</Trans>
+            </SettingsList.ItemText>
+            {walletData?.solanaWallet && (
+              <SettingsList.BadgeText>1</SettingsList.BadgeText>
             )}
           </SettingsList.LinkItem>
           <SettingsList.Divider />

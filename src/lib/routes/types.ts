@@ -66,6 +66,7 @@ export type CommonNavigatorParams = {
   InterestsSettings: undefined
   AboutSettings: undefined
   AppIconSettings: undefined
+  WalletSettings: undefined
   Search: {q?: string}
   Hashtag: {tag: string; author?: string}
   Topic: {topic: string}

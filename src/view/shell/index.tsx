@@ -31,6 +31,7 @@ import {LinkWarningDialog} from '#/components/dialogs/LinkWarning'
 import {MutedWordsDialog} from '#/components/dialogs/MutedWords'
 import {SigninDialog} from '#/components/dialogs/Signin'
 import {Outlet as PortalOutlet} from '#/components/Portal'
+import {WalletPrompt} from '#/components/WalletPrompt'
 import {RoutesContainer, TabsNavigator} from '#/Navigation'
 import {BottomSheetOutlet} from '../../../modules/bottom-sheet'
 import {updateActiveViewAsync} from '../../../modules/expo-bluesky-swiss-army/src/VisibilityView'
@@ -157,6 +158,7 @@ function ShellInner() {
       <EmailDialog />
       <InAppBrowserConsentDialog />
       <LinkWarningDialog />
+      <WalletPrompt />
       <Lightbox />
       <PortalOutlet />
       <BottomSheetOutlet />
