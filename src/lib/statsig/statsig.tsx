@@ -1,68 +1,68 @@
 import React from 'react'
-import {Platform} from 'react-native'
+// import {Platform} from 'react-native'
 import {AppState, type AppStateStatus} from 'react-native'
-import {Statsig, StatsigProvider} from 'statsig-react-native-expo'
 
-import {BUNDLE_DATE, BUNDLE_IDENTIFIER, IS_TESTFLIGHT} from '#/lib/app-info'
+// import {Statsig, StatsigProvider} from 'statsig-react-native-expo'
+// import {BUNDLE_DATE, BUNDLE_IDENTIFIER} from '#/lib/app-info'
 import {logger} from '#/logger'
 import {type MetricEvents} from '#/logger/metrics'
-import {isWeb} from '#/platform/detection'
-import * as persisted from '#/state/persisted'
+// import {isWeb} from '#/platform/detection'
+// import * as persisted from '#/state/persisted'
 import {useSession} from '../../state/session'
-import {timeout} from '../async/timeout'
+// import {timeout} from '../async/timeout'
 import {useNonReactiveCallback} from '../hooks/useNonReactiveCallback'
 import {type Gate} from './gates'
 
-const SDK_KEY = 'client-SXJakO39w9vIhl3D44u8UupyzFl4oZ2qPIkjwcvuPsV'
+// const SDK_KEY = 'client-SXJakO39w9vIhl3D44u8UupyzFl4oZ2qPIkjwcvuPsV'
 
-export const initPromise = initialize()
+// export const initPromise = initialize()
 
-type StatsigUser = {
-  userID: string | undefined
-  // TODO: Remove when enough users have custom.platform:
-  platform: 'ios' | 'android' | 'web'
-  custom: {
-    // This is the place where we can add our own stuff.
-    // Fields here have to be non-optional to be visible in the UI.
-    platform: 'ios' | 'android' | 'web'
-    bundleIdentifier: string
-    bundleDate: number
-    refSrc: string
-    refUrl: string
-    appLanguage: string
-    contentLanguages: string[]
-  }
-}
+// type StatsigUser = {
+//   userID: string | undefined
+//   // TODO: Remove when enough users have custom.platform:
+//   platform: 'ios' | 'android' | 'web'
+//   custom: {
+//     // This is the place where we can add our own stuff.
+//     // Fields here have to be non-optional to be visible in the UI.
+//     platform: 'ios' | 'android' | 'web'
+//     bundleIdentifier: string
+//     bundleDate: number
+//     refSrc: string
+//     refUrl: string
+//     appLanguage: string
+//     contentLanguages: string[]
+//   }
+// }
 
-let refSrc = ''
-let refUrl = ''
-if (isWeb && typeof window !== 'undefined') {
-  const params = new URLSearchParams(window.location.search)
-  refSrc = params.get('ref_src') ?? ''
-  refUrl = decodeURIComponent(params.get('ref_url') ?? '')
-}
+// let refSrc = ''
+// let refUrl = ''
+// if (isWeb && typeof window !== 'undefined') {
+//   const params = new URLSearchParams(window.location.search)
+//   refSrc = params.get('ref_src') ?? ''
+//   refUrl = decodeURIComponent(params.get('ref_url') ?? '')
+// }
 
 export type {MetricEvents as LogEvents}
 
-function createStatsigOptions(prefetchUsers: StatsigUser[]) {
-  return {
-    environment: {
-      tier:
-        process.env.NODE_ENV === 'development'
-          ? 'development'
-          : IS_TESTFLIGHT
-            ? 'staging'
-            : 'production',
-    },
-    // Don't block on waiting for network. The fetched config will kick in on next load.
-    // This ensures the UI is always consistent and doesn't update mid-session.
-    // Note this makes cold load (no local storage) and private mode return `false` for all gates.
-    initTimeoutMs: 1,
-    // Get fresh flags for other accounts as well, if any.
-    prefetchUsers,
-    api: 'https://events.bsky.app/v2',
-  }
-}
+// function createStatsigOptions(prefetchUsers: StatsigUser[]) {
+//   return {
+//     environment: {
+//       tier:
+//         process.env.NODE_ENV === 'development'
+//           ? 'development'
+//           : IS_TESTFLIGHT
+//             ? 'staging'
+//             : 'production',
+//     },
+//     // Don't block on waiting for network. The fetched config will kick in on next load.
+//     // This ensures the UI is always consistent and doesn't update mid-session.
+//     // Note this makes cold load (no local storage) and private mode return `false` for all gates.
+//     initTimeoutMs: 1,
+//     // Get fresh flags for other accounts as well, if any.
+//     prefetchUsers,
+//     api: 'https://events.bsky.app/v2',
+//   }
+// }
 
 type FlatJSONRecord = Record<
   string,
@@ -107,13 +107,13 @@ export function logEvent<E extends keyof MetricEvents>(
   try {
     const fullMetadata = toStringRecord(rawMetadata)
     fullMetadata.routeName = getCurrentRouteName() ?? '(Uninitialized)'
-    if (Statsig.initializeCalled()) {
-      let ev: string = eventName
-      if (options.lake) {
-        ev = `lake:${ev}`
-      }
-      Statsig.logEvent(ev, null, fullMetadata)
-    }
+    // if (Statsig.initializeCalled()) {
+    //   let ev: string = eventName
+    //   if (options.lake) {
+    //     ev = `lake:${ev}`
+    //   }
+    //   Statsig.logEvent(ev, null, fullMetadata)
+    // }
     /**
      * All datalake events should be sent using `logger.metric`, and we don't
      * want to double-emit logs to other transports.
@@ -158,19 +158,19 @@ export function useGate(): (gateName: Gate, options?: GateOptions) => boolean {
     throw Error('useGate() cannot be called outside StatsigProvider.')
   }
   const gate = React.useCallback(
-    (gateName: Gate, options: GateOptions = {}): boolean => {
+    (gateName: Gate, _options: GateOptions = {}): boolean => {
       const cachedValue = cache.get(gateName)
       if (cachedValue !== undefined) {
         return cachedValue
       }
       let value = false
-      if (Statsig.initializeCalled()) {
-        if (options.dangerouslyDisableExposureLogging) {
-          value = Statsig.checkGateWithExposureLoggingDisabled(gateName)
-        } else {
-          value = Statsig.checkGate(gateName)
-        }
-      }
+      // if (Statsig.initializeCalled()) {
+      //   if (options.dangerouslyDisableExposureLogging) {
+      //     value = Statsig.checkGateWithExposureLoggingDisabled(gateName)
+      //   } else {
+      //     value = Statsig.checkGate(gateName)
+      //   }
+      // }
       cache.set(gateName, value)
       return value
     },
@@ -201,22 +201,22 @@ export function useDangerousSetGate(): (
   return dangerousSetGate
 }
 
-function toStatsigUser(did: string | undefined): StatsigUser {
-  const languagePrefs = persisted.get('languagePrefs')
-  return {
-    userID: did,
-    platform: Platform.OS as 'ios' | 'android' | 'web',
-    custom: {
-      refSrc,
-      refUrl,
-      platform: Platform.OS as 'ios' | 'android' | 'web',
-      bundleIdentifier: BUNDLE_IDENTIFIER,
-      bundleDate: BUNDLE_DATE,
-      appLanguage: languagePrefs.appLanguage,
-      contentLanguages: languagePrefs.contentLanguages,
-    },
-  }
-}
+// function toStatsigUser(did: string | undefined): StatsigUser {
+//   const languagePrefs = persisted.get('languagePrefs')
+//   return {
+//     userID: did,
+//     platform: Platform.OS as 'ios' | 'android' | 'web',
+//     custom: {
+//       refSrc,
+//       refUrl,
+//       platform: Platform.OS as 'ios' | 'android' | 'web',
+//       bundleIdentifier: BUNDLE_IDENTIFIER,
+//       bundleDate: BUNDLE_DATE,
+//       appLanguage: languagePrefs.appLanguage,
+//       contentLanguages: languagePrefs.contentLanguages,
+//     },
+//   }
+// }
 
 let lastState: AppStateStatus = AppState.currentState
 let lastActive = lastState === 'active' ? performance.now() : null
@@ -241,21 +241,21 @@ AppState.addEventListener('change', (state: AppStateStatus) => {
 })
 
 export async function tryFetchGates(
-  did: string | undefined,
-  strategy: 'prefer-low-latency' | 'prefer-fresh-gates',
+  _did: string | undefined,
+  _strategy: 'prefer-low-latency' | 'prefer-fresh-gates',
 ) {
   try {
-    let timeoutMs = 250 // Don't block the UI if we can't do this fast.
-    if (strategy === 'prefer-fresh-gates') {
-      // Use this for less common operations where the user would be OK with a delay.
-      timeoutMs = 1500
-    }
-    if (Statsig.initializeCalled()) {
-      await Promise.race([
-        timeout(timeoutMs),
-        Statsig.prefetchUsers([toStatsigUser(did)]),
-      ])
-    }
+    // let timeoutMs = 250 // Don't block the UI if we can't do this fast.
+    // if (strategy === 'prefer-fresh-gates') {
+    //   // Use this for less common operations where the user would be OK with a delay.
+    //   timeoutMs = 1500
+    // }
+    // if (Statsig.initializeCalled()) {
+    //   await Promise.race([
+    //     timeout(timeoutMs),
+    //     Statsig.prefetchUsers([toStatsigUser(did)]),
+    //   ])
+    // }
   } catch (e) {
     // Don't leak errors to the calling code, this is meant to be always safe.
     console.error(e)
@@ -263,26 +263,27 @@ export async function tryFetchGates(
 }
 
 export function initialize() {
-  return Statsig.initialize(SDK_KEY, null, createStatsigOptions([]))
+  // return Statsig.initialize(SDK_KEY, null, createStatsigOptions([]))
+  return Promise.resolve()
 }
 
 export function Provider({children}: {children: React.ReactNode}) {
-  const {currentAccount, accounts} = useSession()
+  const {currentAccount} = useSession()
   const did = currentAccount?.did
-  const currentStatsigUser = React.useMemo(() => toStatsigUser(did), [did])
+  // const currentStatsigUser = React.useMemo(() => toStatsigUser(did), [did])
 
-  const otherDidsConcatenated = accounts
-    .map(account => account.did)
-    .filter(accountDid => accountDid !== did)
-    .join(' ') // We're only interested in DID changes.
-  const otherStatsigUsers = React.useMemo(
-    () => otherDidsConcatenated.split(' ').map(toStatsigUser),
-    [otherDidsConcatenated],
-  )
-  const statsigOptions = React.useMemo(
-    () => createStatsigOptions(otherStatsigUsers),
-    [otherStatsigUsers],
-  )
+  // const otherDidsConcatenated = accounts
+  //   .map(account => account.did)
+  //   .filter(accountDid => accountDid !== did)
+  //   .join(' ') // We're only interested in DID changes.
+  // const otherStatsigUsers = React.useMemo(
+  //   () => otherDidsConcatenated.split(' ').map(toStatsigUser),
+  //   [otherDidsConcatenated],
+  // )
+  // const statsigOptions = React.useMemo(
+  //   () => createStatsigOptions(otherStatsigUsers),
+  //   [otherStatsigUsers],
+  // )
 
   // Have our own cache in front of Statsig.
   // This ensures the results remain stable until the active DID changes.
@@ -297,10 +298,10 @@ export function Provider({children}: {children: React.ReactNode}) {
   // These changes are prefetched and stored, but don't get applied until the active DID changes.
   // This ensures that when you switch an account, it already has fresh results by then.
   const handleIntervalTick = useNonReactiveCallback(() => {
-    if (Statsig.initializeCalled()) {
-      // Note: Only first five will be taken into account by Statsig.
-      Statsig.prefetchUsers([currentStatsigUser, ...otherStatsigUsers])
-    }
+    // if (Statsig.initializeCalled()) {
+    //   // Note: Only first five will be taken into account by Statsig.
+    //   Statsig.prefetchUsers([currentStatsigUser, ...otherStatsigUsers])
+    // }
   })
   React.useEffect(() => {
     const id = setInterval(handleIntervalTick, 60e3 /* 1 min */)
@@ -309,7 +310,7 @@ export function Provider({children}: {children: React.ReactNode}) {
 
   return (
     <GateCache.Provider value={gateCache}>
-      <StatsigProvider
+      {/* <StatsigProvider
         key={did}
         sdkKey={SDK_KEY}
         mountKey={currentStatsigUser.userID}
@@ -319,7 +320,8 @@ export function Provider({children}: {children: React.ReactNode}) {
         waitForInitialization={true}
         options={statsigOptions}>
         {children}
-      </StatsigProvider>
+      </StatsigProvider> */}
+      {children}
     </GateCache.Provider>
   )
 }
