@@ -10,7 +10,7 @@ import {useMutation} from '@tanstack/react-query'
 import {Statsig} from 'statsig-react-native-expo'
 
 import {appVersion, BUNDLE_DATE, bundleInfo} from '#/lib/app-info'
-import {STATUS_PAGE_URL} from '#/lib/constants'
+// import {STATUS_PAGE_URL} from '#/lib/constants'
 import {type CommonNavigatorParams} from '#/lib/routes/types'
 import {isAndroid, isIOS, isNative} from '#/platform/detection'
 import * as Toast from '#/view/com/util/Toast'
@@ -18,7 +18,7 @@ import * as SettingsList from '#/screens/Settings/components/SettingsList'
 import {Atom_Stroke2_Corner0_Rounded as AtomIcon} from '#/components/icons/Atom'
 import {BroomSparkle_Stroke2_Corner2_Rounded as BroomSparkleIcon} from '#/components/icons/BroomSparkle'
 import {CodeLines_Stroke2_Corner2_Rounded as CodeLinesIcon} from '#/components/icons/CodeLines'
-import {Globe_Stroke2_Corner0_Rounded as GlobeIcon} from '#/components/icons/Globe'
+// import {Globe_Stroke2_Corner0_Rounded as GlobeIcon} from '#/components/icons/Globe'
 import {Newspaper_Stroke2_Corner2_Rounded as NewspaperIcon} from '#/components/icons/Newspaper'
 import {Wrench_Stroke2_Corner2_Rounded as WrenchIcon} from '#/components/icons/Wrench'
 import * as Layout from '#/components/Layout'
@@ -32,7 +32,13 @@ export function AboutSettingsScreen({}: Props) {
   const {_, i18n} = useLingui()
   const [devModeEnabled, setDevModeEnabled] = useDevMode()
   const [demoModeEnabled, setDemoModeEnabled] = useDemoMode()
-  const stableID = useMemo(() => Statsig.getStableID(), [])
+  const stableID = useMemo(() => {
+    try {
+      return Statsig.initializeCalled() ? Statsig.getStableID() : 'dev-mode'
+    } catch (e) {
+      return 'dev-mode'
+    }
+  }, [])
 
   const {mutate: onClearImageCache, isPending: isClearingImageCache} =
     useMutation({
@@ -80,7 +86,7 @@ export function AboutSettingsScreen({}: Props) {
       <Layout.Content>
         <SettingsList.Container>
           <SettingsList.LinkItem
-            to="https://bsky.social/about/support/tos"
+            to="https://skyfi.social/tos"
             label={_(msg`Terms of Service`)}>
             <SettingsList.ItemIcon icon={NewspaperIcon} />
             <SettingsList.ItemText>
@@ -88,21 +94,21 @@ export function AboutSettingsScreen({}: Props) {
             </SettingsList.ItemText>
           </SettingsList.LinkItem>
           <SettingsList.LinkItem
-            to="https://bsky.social/about/support/privacy-policy"
+            to="https://skyfi.social/privacy-policy"
             label={_(msg`Privacy Policy`)}>
             <SettingsList.ItemIcon icon={NewspaperIcon} />
             <SettingsList.ItemText>
               <Trans>Privacy Policy</Trans>
             </SettingsList.ItemText>
           </SettingsList.LinkItem>
-          <SettingsList.LinkItem
+          {/* <SettingsList.LinkItem
             to={STATUS_PAGE_URL}
             label={_(msg`Status Page`)}>
             <SettingsList.ItemIcon icon={GlobeIcon} />
             <SettingsList.ItemText>
               <Trans>Status Page</Trans>
             </SettingsList.ItemText>
-          </SettingsList.LinkItem>
+          </SettingsList.LinkItem> */}
           <SettingsList.Divider />
           <SettingsList.LinkItem to="/sys/log" label={_(msg`System log`)}>
             <SettingsList.ItemIcon icon={CodeLinesIcon} />
