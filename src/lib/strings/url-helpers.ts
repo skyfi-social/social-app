@@ -7,12 +7,9 @@ import {isInvalidHandle} from '#/lib/strings/handles'
 import {startUriToStarterPackUri} from '#/lib/strings/starter-pack'
 import {logger} from '#/logger'
 
-export const BSKY_APP_HOST = 'https://bsky.app'
+export const BSKY_APP_HOST = 'https://app.skyfi.social'
 const BSKY_TRUSTED_HOSTS = [
-  'bsky\\.app',
-  'bsky\\.social',
-  'blueskyweb\\.xyz',
-  'blueskyweb\\.zendesk\\.com',
+  'skyfi\\.social',
   ...(__DEV__ ? ['localhost:19006', 'localhost:8100'] : []),
 ]
 
