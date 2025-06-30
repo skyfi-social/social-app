@@ -1,27 +1,20 @@
-import Svg, {Path, PathProps, SvgProps} from 'react-native-svg'
-
-import {usePalette} from '#/lib/hooks/usePalette'
+import Svg, {Path, type PathProps, type SvgProps} from 'react-native-svg'
 
 const ratio = 54 / 61
 
-export function Logomark({
-  fill,
-  ...rest
-}: {fill?: PathProps['fill']} & SvgProps) {
-  const pal = usePalette('default')
+export function Logomark({...rest}: {fill?: PathProps['fill']} & SvgProps) {
   // @ts-ignore it's fiiiiine
   const size = parseInt(rest.width || 32)
 
   return (
     <Svg
-      fill="none"
-      viewBox="0 0 61 54"
+      viewBox="0 0 500 305"
       {...rest}
       width={size}
       height={Number(size) * ratio}>
       <Path
-        fill={fill || pal.text.color}
-        d="M13.223 3.602C20.215 8.832 27.738 19.439 30.5 25.13c2.762-5.691 10.284-16.297 17.278-21.528C52.824-.172 61-3.093 61 6.2c0 1.856-1.068 15.59-1.694 17.82-2.178 7.752-10.112 9.73-17.17 8.532 12.337 2.092 15.475 9.021 8.697 15.95-12.872 13.159-18.5-3.302-19.943-7.52-.264-.773-.388-1.135-.39-.827-.002-.308-.126.054-.39.827-1.442 4.218-7.071 20.679-19.943 7.52-6.778-6.929-3.64-13.858 8.697-15.95-7.058 1.197-14.992-.78-17.17-8.532C1.068 21.79 0 8.056 0 6.2 0-3.093 8.176-.172 13.223 3.602Z"
+        fill="#46cc92"
+        d="M500,167.6c0,65.18-61.69,118.07-137.92,118.07-18.56,0-36.38-3.13-52.5-8.91-18.94,17.1-45.75,27.77-75.47,27.77-23.81,0-45.66-6.82-63.19-18.3-12.38,3.29-25.6,5.06-39.19,5.06C58.97,291.29,0,240.8,0,178.51c0-59.08,53.07-107.56,120.66-112.37C132.57,28.09,173.17,0,221.36,0c43.78,0,81.19,23.04,96.75,55.71,13.78-4.01,28.6-6.18,43.97-6.18,76.22,0,137.92,52.9,137.92,118.07Z"
       />
     </Svg>
   )

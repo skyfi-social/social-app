@@ -1,6 +1,10 @@
 import {type BskyAgent} from '@atproto/api'
 
-import {type ProfileWalletData, type SolanaWallet, type WalletConnection} from '#/types/wallet'
+import {
+  type ProfileWalletData,
+  type SolanaWallet,
+  type WalletConnection,
+} from '#/types/wallet'
 
 export async function getProfileWalletData(
   agent: BskyAgent,
@@ -64,7 +68,7 @@ export async function addWalletToProfile(
 export async function removeWalletFromProfile(agent: BskyAgent): Promise<void> {
   await agent.com.atproto.repo.deleteRecord({
     repo: agent.session?.did || '',
-    collection: 'social.skyfi.profile.wallet',
+    collection: 'social.skyfi.wallet.solana',
     rkey: 'self',
   })
 }

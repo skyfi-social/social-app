@@ -1,12 +1,12 @@
 import React from 'react'
-import {StyleSheet, TextProps} from 'react-native'
+import {StyleSheet, type TextProps} from 'react-native'
 import Svg, {
   Defs,
   LinearGradient,
   Path,
-  PathProps,
+  type PathProps,
   Stop,
-  SvgProps,
+  type SvgProps,
 } from 'react-native-svg'
 import {Image} from 'expo-image'
 
@@ -51,7 +51,7 @@ export const Logo = React.forwardRef(function LogoImpl(props: Props, ref) {
       fill="none"
       // @ts-ignore it's fiiiiine
       ref={ref}
-      viewBox="0 0 64 57"
+      viewBox="0 0 500 305"
       {...rest}
       style={[{width: size, height: size * ratio}, styles]}>
       {gradient && (
@@ -64,8 +64,8 @@ export const Logo = React.forwardRef(function LogoImpl(props: Props, ref) {
       )}
 
       <Path
-        fill={_fill}
-        d="M13.873 3.805C21.21 9.332 29.103 20.537 32 26.55v15.882c0-.338-.13.044-.41.867-1.512 4.456-7.418 21.847-20.923 7.944-7.111-7.32-3.819-14.64 9.125-16.85-7.405 1.264-15.73-.825-18.014-9.015C1.12 23.022 0 8.51 0 6.55 0-3.268 8.579-.182 13.873 3.805ZM50.127 3.805C42.79 9.332 34.897 20.537 32 26.55v15.882c0-.338.13.044.41.867 1.512 4.456 7.418 21.847 20.923 7.944 7.111-7.32 3.819-14.64-9.125-16.85 7.405 1.264 15.73-.825 18.014-9.015C62.88 23.022 64 8.51 64 6.55c0-9.818-8.578-6.732-13.873-2.745Z"
+        fill="#46cc92"
+        d="M500,167.6c0,65.18-61.69,118.07-137.92,118.07-18.56,0-36.38-3.13-52.5-8.91-18.94,17.1-45.75,27.77-75.47,27.77-23.81,0-45.66-6.82-63.19-18.3-12.38,3.29-25.6,5.06-39.19,5.06C58.97,291.29,0,240.8,0,178.51c0-59.08,53.07-107.56,120.66-112.37C132.57,28.09,173.17,0,221.36,0c43.78,0,81.19,23.04,96.75,55.71,13.78-4.01,28.6-6.18,43.97-6.18,76.22,0,137.92,52.9,137.92,118.07Z"
       />
     </Svg>
   )
