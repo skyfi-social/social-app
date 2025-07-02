@@ -96,7 +96,7 @@ export const SplashScreen = ({
 
               <Text
                 style={[a.text_md, a.font_bold, t.atoms.text_contrast_medium]}>
-                <Trans>What's up?</Trans>
+                <Trans>Freedom to transact?</Trans>
               </Text>
             </View>
 
@@ -165,11 +165,11 @@ function Footer() {
         t.atoms.border_contrast_medium,
       ]}>
       <InlineLinkText
-        label={_(msg`Learn more about Bluesky`)}
-        to="https://bsky.social">
-        <Trans>Business</Trans>
+        label={_(msg`Learn more about Skyfi`)}
+        to="https://www.skyfi.social">
+        <Trans>Skyfi.social</Trans>
       </InlineLinkText>
-      <InlineLinkText
+      {/* <InlineLinkText
         label={_(msg`Read the Bluesky blog`)}
         to="https://bsky.social/about/blog">
         <Trans>Blog</Trans>
@@ -180,7 +180,7 @@ function Footer() {
         <Trans comment="Link to a page with job openings at Bluesky">
           Jobs
         </Trans>
-      </InlineLinkText>
+      </InlineLinkText> */}
 
       <View style={a.flex_1} />
 
