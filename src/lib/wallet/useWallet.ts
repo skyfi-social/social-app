@@ -2,15 +2,25 @@ import {useCallback, useState} from 'react'
 import {useMutation, useQuery} from '@tanstack/react-query'
 
 import {useAgent, useSession} from '#/state/session'
-import {type SolanaWallet, type WalletConnection} from '#/types/wallet'
 import {
-  addWalletToProfile,
+  type EthereumWallet,
+  type EthereumWalletConnection,
+  type SolanaWallet,
+  type WalletConnection,
+  type WalletType,
+} from '#/types/wallet'
+import {
+  addEthereumWalletToProfile,
+  addSolanaWalletToProfile,
+  generateSiweMessage,
   generateWalletVerificationMessage,
-  getAvailableWallet,
+  getAvailableEthereumWallet,
+  getAvailableSolanaWallet,
   getProfileWalletData,
   hasWalletAddress,
   removeWalletFromProfile,
-  verifyWalletSignature,
+  verifySiweSignature,
+  verifySolanaWalletSignature,
 } from './service'
 
 export function useWalletQuery(did?: string) {
@@ -41,12 +51,12 @@ export function useHasWallet(did?: string) {
   })
 }
 
-export function useWalletConnection() {
+export function useSolanaWalletConnection() {
   const [wallet, setWallet] = useState<WalletConnection | null>(null)
   const [connected, setConnected] = useState(false)
 
   const connectWallet = useCallback(async () => {
-    const availableWallet = getAvailableWallet()
+    const availableWallet = getAvailableSolanaWallet()
     if (!availableWallet) {
       throw new Error(
         'No Solana wallet found. Please install Phantom or another Solana wallet.',
@@ -76,7 +86,42 @@ export function useWalletConnection() {
   }
 }
 
-export function useAddWalletMutation() {
+export function useEthereumWalletConnection() {
+  const [wallet, setWallet] = useState<EthereumWalletConnection | null>(null)
+  const [connected, setConnected] = useState(false)
+
+  const connectWallet = useCallback(async () => {
+    const availableWallet = getAvailableEthereumWallet()
+    if (!availableWallet) {
+      throw new Error(
+        'No Ethereum wallet found. Please install MetaMask or another Ethereum wallet.',
+      )
+    }
+
+    await availableWallet.connect()
+    setWallet(availableWallet)
+    setConnected(true)
+
+    return availableWallet
+  }, [])
+
+  const disconnectWallet = useCallback(async () => {
+    if (wallet) {
+      await wallet.disconnect()
+    }
+    setWallet(null)
+    setConnected(false)
+  }, [wallet])
+
+  return {
+    wallet,
+    connected,
+    connectWallet,
+    disconnectWallet,
+  }
+}
+
+export function useAddSolanaWalletMutation() {
   const agent = useAgent()
   const {currentAccount} = useSession()
 
@@ -100,16 +145,51 @@ export function useAddWalletMutation() {
       const signatureResponse = await walletConnection.signMessage(messageBytes)
       console.log('Raw signature response:', signatureResponse)
 
-      const signatureArray = signatureResponse.signature
-      console.log('Signature array:', signatureArray)
-      console.log('Signature array length:', signatureArray.length)
+      let signature: string
+      if (typeof signatureResponse === 'string') {
+        signature = signatureResponse
+      } else if (signatureResponse instanceof Uint8Array) {
+        // Handle Uint8Array response - convert to base64 safely
+        const signatureArray = Array.from(signatureResponse)
+        console.log('Signature array:', signatureArray)
+        console.log('Signature array length:', signatureArray.length)
 
-      const signature = btoa(String.fromCharCode(...signatureArray))
+        // Use a safer approach for large arrays
+        if (signatureArray.length > 1000) {
+          // For very large arrays, process in chunks
+          const chunks = []
+          for (let i = 0; i < signatureArray.length; i += 1000) {
+            chunks.push(
+              String.fromCharCode(...signatureArray.slice(i, i + 1000)),
+            )
+          }
+          signature = btoa(chunks.join(''))
+        } else {
+          signature = btoa(String.fromCharCode(...signatureArray))
+        }
+      } else if (
+        signatureResponse &&
+        typeof signatureResponse === 'object' &&
+        'signature' in signatureResponse
+      ) {
+        // Handle wrapped response objects
+        const wrappedResponse = signatureResponse as {
+          signature: string | Uint8Array
+        }
+        signature =
+          typeof wrappedResponse.signature === 'string'
+            ? wrappedResponse.signature
+            : btoa(
+                String.fromCharCode(...Array.from(wrappedResponse.signature)),
+              )
+      } else {
+        throw new Error('Unexpected signature response format')
+      }
       console.log('Final signature:', signature)
 
       const publicKeyString = walletConnection.publicKey.toString()
 
-      const isValid = await verifyWalletSignature(
+      const isValid = await verifySolanaWalletSignature(
         publicKeyString,
         message,
         signature,
@@ -126,7 +206,51 @@ export function useAddWalletMutation() {
         message,
       }
 
-      await addWalletToProfile(agent, walletData)
+      await addSolanaWalletToProfile(agent, walletData)
+
+      return walletData
+    },
+  })
+}
+
+export function useAddEthereumWalletMutation() {
+  const agent = useAgent()
+  const {currentAccount} = useSession()
+
+  return useMutation({
+    mutationFn: async ({
+      walletConnection,
+    }: {
+      walletConnection: EthereumWalletConnection
+    }) => {
+      if (!currentAccount?.did) {
+        throw new Error('No active session')
+      }
+
+      const timestamp = Date.now()
+      const {siwe, message} = generateSiweMessage(
+        walletConnection.address,
+        currentAccount.did,
+        timestamp,
+      )
+
+      const signature = await walletConnection.signMessage(message)
+      console.log('Ethereum SIWE signature:', signature)
+
+      const isValid = await verifySiweSignature(message, signature)
+
+      if (!isValid) {
+        throw new Error('Invalid wallet signature')
+      }
+
+      const walletData: EthereumWallet = {
+        address: walletConnection.address,
+        signature,
+        timestamp,
+        siwe,
+      }
+
+      await addEthereumWalletToProfile(agent, walletData)
 
       return walletData
     },
@@ -137,8 +261,18 @@ export function useRemoveWalletMutation() {
   const agent = useAgent()
 
   return useMutation({
-    mutationFn: async () => {
-      await removeWalletFromProfile(agent)
+    mutationFn: async (walletType: WalletType) => {
+      await removeWalletFromProfile(agent, walletType)
     },
   })
+}
+
+// Legacy hook for backward compatibility
+export function useWalletConnection() {
+  return useSolanaWalletConnection()
+}
+
+// Legacy hook for backward compatibility
+export function useAddWalletMutation() {
+  return useAddSolanaWalletMutation()
 }

@@ -73,6 +73,7 @@ export function WalletPrompt() {
 
       <WalletConnectionDialog
         control={walletConnectionControl}
+        walletType="solana"
         onWalletAdded={() => {
           // Refresh the wallet status
           window.location.reload()

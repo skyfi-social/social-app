@@ -1,7 +1,9 @@
 import {init, SessionStrategy} from '@bitdrift/react-native'
 import {Statsig} from 'statsig-react-native-expo'
 
-import {initPromise} from '#/lib/statsig/statsig'
+import {initialize} from '#/lib/statsig/statsig'
+
+const initPromise = initialize()
 
 const BITDRIFT_API_KEY = process.env.BITDRIFT_API_KEY
 

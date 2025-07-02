@@ -4,7 +4,12 @@ import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
 import {cleanError} from '#/lib/strings/errors'
-import {useAddWalletMutation, useWalletConnection} from '#/lib/wallet/useWallet'
+import {
+  useAddEthereumWalletMutation,
+  useAddSolanaWalletMutation,
+  useEthereumWalletConnection,
+  useSolanaWalletConnection,
+} from '#/lib/wallet/useWallet'
 import {logger} from '#/logger'
 import {ErrorMessage} from '#/view/com/util/error/ErrorMessage'
 import {atoms as a, useBreakpoints, useTheme, web} from '#/alf'
@@ -12,12 +17,19 @@ import {Button, ButtonText} from '#/components/Button'
 import * as Dialog from '#/components/Dialog'
 import {Loader} from '#/components/Loader'
 import {Text} from '#/components/Typography'
+import {
+  type EthereumWalletConnection,
+  type WalletConnection,
+  type WalletType,
+} from '#/types/wallet'
 
 export function WalletConnectionDialog({
   control,
+  walletType,
   onWalletAdded,
 }: {
   control: Dialog.DialogControlProps
+  walletType: WalletType
   onWalletAdded?: () => void
 }) {
   const {_} = useLingui()
@@ -30,33 +42,61 @@ export function WalletConnectionDialog({
   const [error, setError] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
 
-  const {connectWallet} = useWalletConnection()
-  const addWalletMutation = useAddWalletMutation()
+  const {connectWallet: connectSolanaWallet} = useSolanaWalletConnection()
+  const {connectWallet: connectEthereumWallet} = useEthereumWalletConnection()
+  const addSolanaWalletMutation = useAddSolanaWalletMutation()
+  const addEthereumWalletMutation = useAddEthereumWalletMutation()
+
+  const connectWallet =
+    walletType === 'solana' ? connectSolanaWallet : connectEthereumWallet
 
   const uiStrings = {
     Connect: {
-      title: _(msg`Connect Your Solana Wallet`),
-      message: _(
-        msg`To enable wallet features on your profile, please connect your Solana wallet. We support Phantom and other popular Solana wallets.`,
-      ),
+      title:
+        walletType === 'solana'
+          ? _(msg`Connect Your Solana Wallet`)
+          : _(msg`Connect Your Ethereum Wallet`),
+      message:
+        walletType === 'solana'
+          ? _(
+              msg`To enable wallet features on your profile, please connect your Solana wallet. We support Phantom and other popular Solana wallets.`,
+            )
+          : _(
+              msg`To enable wallet features on your profile, please connect your Ethereum wallet. We support MetaMask and other popular Ethereum wallets.`,
+            ),
     },
     Sign: {
       title: _(msg`Sign Verification Message`),
-      message: _(
-        msg`Please sign the verification message with your wallet to prove ownership of your address.`,
-      ),
+      message:
+        walletType === 'solana'
+          ? _(
+              msg`Please sign the verification message with your wallet to prove ownership of your address.`,
+            )
+          : _(
+              msg`Please sign the SIWE message with your wallet to prove ownership of your address.`,
+            ),
     },
     Success: {
       title: _(msg`Wallet Connected!`),
-      message: _(
-        msg`Your Solana wallet has been successfully added to your profile.`,
-      ),
+      message:
+        walletType === 'solana'
+          ? _(
+              msg`Your Solana wallet has been successfully added to your profile.`,
+            )
+          : _(
+              msg`Your Ethereum wallet has been successfully added to your profile.`,
+            ),
     },
     Error: {
       title: _(msg`Connection Failed`),
-      message: _(
-        msg`We couldn't connect your wallet. Please make sure you have a Solana wallet installed and try again.`,
-      ),
+      message:
+        walletType === 'solana'
+          ? _(
+              msg`We couldn't connect your wallet. Please make sure you have a Solana wallet installed and try again.`,
+            )
+          : _(
+              msg`We couldn't connect your wallet. Please make sure you have an Ethereum wallet installed and try again.`,
+            ),
     },
   }
 
@@ -68,7 +108,15 @@ export function WalletConnectionDialog({
       setCurrentStep('Sign')
 
       // Automatically proceed to signing
-      await addWalletMutation.mutateAsync({walletConnection})
+      if (walletType === 'solana') {
+        await addSolanaWalletMutation.mutateAsync({
+          walletConnection: walletConnection as WalletConnection,
+        })
+      } else {
+        await addEthereumWalletMutation.mutateAsync({
+          walletConnection: walletConnection as EthereumWalletConnection,
+        })
+      }
       setCurrentStep('Success')
       onWalletAdded?.()
     } catch (e: unknown) {
@@ -143,10 +191,17 @@ export function WalletConnectionDialog({
                     a.leading_snug,
                     t.atoms.text_contrast_medium,
                   ]}>
-                  <Trans>
-                    Make sure you have Phantom or another Solana wallet
-                    installed in your browser.
-                  </Trans>
+                  {walletType === 'solana' ? (
+                    <Trans>
+                      Make sure you have Phantom or another Solana wallet
+                      installed in your browser.
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      Make sure you have MetaMask or another Ethereum wallet
+                      installed in your browser.
+                    </Trans>
+                  )}
                 </Text>
               </View>
             )}
@@ -159,10 +214,18 @@ export function WalletConnectionDialog({
                     a.leading_snug,
                     t.atoms.text_contrast_medium,
                   ]}>
-                  <Trans>
-                    Your wallet will prompt you to sign a message. This proves
-                    you own the wallet address.
-                  </Trans>
+                  {walletType === 'solana' ? (
+                    <Trans>
+                      Your wallet will prompt you to sign a message. This proves
+                      you own the wallet address.
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      Your wallet will prompt you to sign a SIWE message. This
+                      proves you own the wallet address and enables secure
+                      authentication.
+                    </Trans>
+                  )}
                 </Text>
               </View>
             )}

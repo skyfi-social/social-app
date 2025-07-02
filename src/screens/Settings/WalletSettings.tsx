@@ -1,4 +1,4 @@
-import {useCallback} from 'react'
+import React, {useCallback} from 'react'
 import {Pressable, View} from 'react-native'
 import Animated, {
   FadeIn,
@@ -13,6 +13,7 @@ import {type NativeStackScreenProps} from '@react-navigation/native-stack'
 
 import {type CommonNavigatorParams} from '#/lib/routes/types'
 import {cleanError} from '#/lib/strings/errors'
+import {getWalletDisplayInfo} from '#/lib/wallet/service'
 import {useRemoveWalletMutation, useWalletQuery} from '#/lib/wallet/useWallet'
 import {isWeb} from '#/platform/detection'
 import {useSession} from '#/state/session'
@@ -25,11 +26,13 @@ import {Admonition} from '#/components/Admonition'
 import {Button, ButtonIcon, ButtonText} from '#/components/Button'
 import {useDialogControl} from '#/components/Dialog'
 import {WalletConnectionDialog} from '#/components/dialogs/WalletConnectionDialog'
-import {PlusLarge_Stroke2_Corner0_Rounded as PlusIcon} from '#/components/icons/Plus'
+import {EthereumLogo} from '#/components/icons/EthereumLogo'
+import {SolanaLogo} from '#/components/icons/SolanaLogo'
 import {Trash_Stroke2_Corner0_Rounded as TrashIcon} from '#/components/icons/Trash'
 import * as Layout from '#/components/Layout'
 import * as Prompt from '#/components/Prompt'
 import {Text} from '#/components/Typography'
+import {type WalletType} from '#/types/wallet'
 import * as SettingsList from './components/SettingsList'
 
 type Props = NativeStackScreenProps<CommonNavigatorParams, 'WalletSettings'>
@@ -37,28 +40,36 @@ export function WalletSettingsScreen({}: Props) {
   const {_} = useLingui()
   const {currentAccount} = useSession()
   const {data: walletData, error, refetch} = useWalletQuery(currentAccount?.did)
-  const walletConnectionControl = useDialogControl()
+  const solanaWalletConnectionControl = useDialogControl()
+  const ethereumWalletConnectionControl = useDialogControl()
   const deleteWalletControl = useDialogControl()
   const removeWalletMutation = useRemoveWalletMutation()
   const {gtMobile} = useBreakpoints()
   const t = useTheme()
 
+  const [walletToDelete, setWalletToDelete] = React.useState<WalletType | null>(
+    null,
+  )
+
   const onDeleteWallet = useCallback(async () => {
+    if (!walletToDelete) return
+
     try {
-      await removeWalletMutation.mutateAsync()
+      await removeWalletMutation.mutateAsync(walletToDelete)
       Toast.show(_(msg`Wallet removed`))
       refetch()
+      setWalletToDelete(null)
     } catch (e: any) {
       Toast.show(_(msg`Failed to remove wallet: ${cleanError(e)}`))
     }
-  }, [_, refetch, removeWalletMutation])
+  }, [_, refetch, removeWalletMutation, walletToDelete])
 
   const formatWalletAddress = (address: string) => {
     // Show full address on larger screens
     if (gtMobile) return address
     // Truncate on smaller screens
     if (address.length <= 8) return address
-    return `${address.slice(0, 4)}...${address.slice(-4)}`
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
   }
 
   const formatDateTime = (timestamp: number) => {
@@ -81,6 +92,17 @@ export function WalletSettingsScreen({}: Props) {
     },
     [_],
   )
+
+  const handleDeleteWallet = useCallback(
+    (walletType: WalletType) => {
+      setWalletToDelete(walletType)
+      deleteWalletControl.open()
+    },
+    [deleteWalletControl],
+  )
+
+  const wallets = walletData ? getWalletDisplayInfo(walletData) : []
+  const hasWallets = wallets.length > 0
 
   return (
     <Layout.Screen testID="WalletSettingsScreen">
@@ -105,96 +127,136 @@ export function WalletSettingsScreen({}: Props) {
             <SettingsList.Item>
               <Admonition type="tip" style={[a.flex_1]}>
                 <Trans>
-                  Connect your Solana wallet to enable crypto features and prove
-                  ownership of your address.
+                  Connect your crypto wallets to enable crypto features and
+                  prove ownership of your addresses.
                 </Trans>
               </Admonition>
             </SettingsList.Item>
+
+            {/* Connect Wallet Buttons */}
             <SettingsList.Item>
               <Button
-                label={_(msg`Add Solana Wallet`)}
+                label={_(msg`Connect Solana`)}
                 size="large"
                 color="primary"
                 variant="solid"
-                onPress={() => walletConnectionControl.open()}
-                style={[a.flex_1]}>
-                <ButtonIcon icon={PlusIcon} position="left" />
+                onPress={() => solanaWalletConnectionControl.open()}
+                style={[a.w_full]}>
+                <SolanaLogo width={24} />
                 <ButtonText>
-                  <Trans>Add Solana Wallet</Trans>
+                  <Trans>Connect Solana</Trans>
                 </ButtonText>
               </Button>
             </SettingsList.Item>
-            {walletData?.solanaWallet && (
-              <SettingsList.Item>
-                <LayoutAnimationConfig skipEntering>
-                  <Animated.View
-                    entering={!isWeb ? FadeIn : undefined}
-                    exiting={!isWeb ? StretchOutY.duration(200) : undefined}
-                    layout={!isWeb ? LinearTransition.duration(150) : undefined}
-                    style={[a.w_full]}>
-                    <View
-                      style={[
-                        a.flex_row,
-                        a.align_center,
-                        a.gap_md,
-                        a.px_lg,
-                        a.py_md,
-                        a.border,
-                        a.rounded_md,
-                        {borderColor: t.palette.contrast_200},
-                      ]}>
-                      <View style={[a.flex_1]}>
-                        <Text style={[a.font_bold, a.text_md]}>
-                          Solana Wallet
-                        </Text>
-                        <Pressable
-                          accessibilityRole="button"
-                          onPress={() =>
-                            copyAddressToClipboard(
-                              walletData.solanaWallet.address,
-                            )
-                          }
-                          style={[a.mt_xs]}>
-                          <Text
-                            style={[a.text_sm, {color: t.palette.primary_500}]}>
-                            Address:{' '}
-                            {formatWalletAddress(
-                              walletData.solanaWallet.address,
+            <SettingsList.Item>
+              <Button
+                label={_(msg`Connect Ethereum`)}
+                size="large"
+                color="primary"
+                variant="solid"
+                onPress={() => ethereumWalletConnectionControl.open()}
+                style={[a.w_full]}>
+                <EthereumLogo width={20} />
+                <ButtonText>
+                  <Trans>Connect Ethereum</Trans>
+                </ButtonText>
+              </Button>
+            </SettingsList.Item>
+
+            {/* Connected Wallets and Empty State */}
+            <LayoutAnimationConfig skipEntering skipExiting>
+              {hasWallets ? (
+                wallets.map(wallet => (
+                  <SettingsList.Item key={`${wallet.type}-${wallet.address}`}>
+                    <Animated.View
+                      entering={!isWeb ? FadeIn : undefined}
+                      exiting={!isWeb ? StretchOutY.duration(200) : undefined}
+                      layout={
+                        !isWeb ? LinearTransition.duration(150) : undefined
+                      }
+                      style={[a.w_full]}>
+                      <View
+                        style={[
+                          a.flex_row,
+                          a.align_center,
+                          a.gap_md,
+                          a.px_lg,
+                          a.py_md,
+                          a.border,
+                          a.rounded_md,
+                          {borderColor: t.palette.contrast_200},
+                        ]}>
+                        <View style={[a.flex_1]}>
+                          <View style={[a.flex_row, a.align_center, a.gap_sm]}>
+                            {wallet.type === 'solana' ? (
+                              <SolanaLogo width={24} />
+                            ) : (
+                              <EthereumLogo width={20} />
                             )}
+                            <Text style={[a.font_bold, a.text_md]}>
+                              {wallet.displayName}
+                            </Text>
+                          </View>
+                          <Pressable
+                            accessibilityRole="button"
+                            onPress={() =>
+                              copyAddressToClipboard(wallet.address)
+                            }
+                            style={[a.mt_xs]}>
+                            <Text
+                              style={[
+                                a.text_sm,
+                                {color: t.palette.primary_500},
+                              ]}>
+                              Address: {formatWalletAddress(wallet.address)}
+                            </Text>
+                          </Pressable>
+                          <Text
+                            style={[
+                              a.text_sm,
+                              {color: t.palette.contrast_500},
+                            ]}>
+                            Added: {formatDateTime(wallet.timestamp)}
                           </Text>
-                        </Pressable>
-                        <Text
-                          style={[a.text_sm, {color: t.palette.contrast_500}]}>
-                          Added:{' '}
-                          {formatDateTime(walletData.solanaWallet.timestamp)}
-                        </Text>
+                        </View>
+                        <Button
+                          label={_(
+                            msg`Delete ${wallet.displayName.toLowerCase()}`,
+                          )}
+                          size="small"
+                          color="negative"
+                          variant="ghost"
+                          onPress={() => handleDeleteWallet(wallet.type)}>
+                          <ButtonIcon icon={TrashIcon} />
+                        </Button>
                       </View>
-                      <Button
-                        label={_(msg`Delete wallet`)}
-                        size="small"
-                        color="negative"
-                        variant="ghost"
-                        onPress={() => deleteWalletControl.open()}>
-                        <ButtonIcon icon={TrashIcon} />
-                      </Button>
-                    </View>
-                  </Animated.View>
-                </LayoutAnimationConfig>
-              </SettingsList.Item>
-            )}
-            {!walletData?.solanaWallet && (
-              <SettingsList.Item>
-                <EmptyState
-                  icon="💰"
-                  message={_(msg`No wallet connected`)}
-                  testID="walletListEmpty"
-                />
-              </SettingsList.Item>
-            )}
+                    </Animated.View>
+                  </SettingsList.Item>
+                ))
+              ) : (
+                <>
+                  <SettingsList.Divider />
+                  <EmptyState
+                    icon="wallet"
+                    message={_(msg`No wallets connected`)}
+                  />
+                </>
+              )}
+            </LayoutAnimationConfig>
           </SettingsList.Container>
         )}
+
+        {/* Dialogs */}
         <WalletConnectionDialog
-          control={walletConnectionControl}
+          control={solanaWalletConnectionControl}
+          walletType="solana"
+          onWalletAdded={() => {
+            refetch()
+          }}
+        />
+        <WalletConnectionDialog
+          control={ethereumWalletConnectionControl}
+          walletType="ethereum"
           onWalletAdded={() => {
             refetch()
           }}

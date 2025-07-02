@@ -1,14 +1,15 @@
-import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native'
-import {IconProp} from '@fortawesome/fontawesome-svg-core'
+import {type StyleProp, StyleSheet, View, type ViewStyle} from 'react-native'
+import {type IconProp} from '@fortawesome/fontawesome-svg-core'
 import {
   FontAwesomeIcon,
-  FontAwesomeIconStyle,
+  type FontAwesomeIconStyle,
 } from '@fortawesome/react-native-fontawesome'
 
 import {usePalette} from '#/lib/hooks/usePalette'
 import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
 import {UserGroupIcon} from '#/lib/icons'
 import {Growth_Stroke2_Corner0_Rounded as Growth} from '#/components/icons/Growth'
+import {Leaf_Stroke2_Corner0_Rounded as TipIcon} from '#/components/icons/Leaf'
 import {Text} from './text/Text'
 
 export function EmptyState({
@@ -18,7 +19,7 @@ export function EmptyState({
   style,
 }: {
   testID?: string
-  icon: IconProp | 'user-group' | 'growth'
+  icon: IconProp | 'user-group' | 'growth' | 'wallet'
   message: string
   style?: StyleProp<ViewStyle>
 }) {
@@ -37,6 +38,8 @@ export function EmptyState({
           <UserGroupIcon size={iconSize} />
         ) : icon === 'growth' ? (
           <Growth width={iconSize} fill={pal.colors.emptyStateIcon} />
+        ) : icon === 'wallet' ? (
+          <TipIcon width={iconSize} fill={pal.colors.emptyStateIcon} />
         ) : (
           <FontAwesomeIcon
             icon={icon}
