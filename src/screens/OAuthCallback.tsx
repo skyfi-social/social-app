@@ -1,18 +1,22 @@
-import {useEffect} from 'react'
+import {useEffect, useState} from 'react'
 import {View} from 'react-native'
 import {Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
-import {handleOAuthCallback} from '#/lib/oauth'
+import {createOAuthSessionAccount, handleOAuthCallback} from '#/lib/oauth'
 import {logger} from '#/logger'
 import {isWeb} from '#/platform/detection'
-import * as persisted from '#/state/persisted'
+import {useSessionApi} from '#/state/session'
+import {useLoggedOutViewControls} from '#/state/shell/logged-out'
 import {CenteredView} from '#/view/com/util/Views'
 import {atoms as a} from '#/alf'
 import {Text} from '#/components/Typography'
 
 export function OAuthCallbackScreen() {
   const {_} = useLingui()
+  const {login} = useSessionApi()
+  const {setShowLoggedOut} = useLoggedOutViewControls()
+  const [status, setStatus] = useState('processing')
 
   useEffect(() => {
     // Only process OAuth callback on web
@@ -22,77 +26,102 @@ export function OAuthCallbackScreen() {
 
     const processOAuthCallback = async () => {
       try {
-        const agent = await handleOAuthCallback()
-        if (agent) {
-          // OAuth agent is already authenticated - we need to extract session data
-          // For OAuth agents, we need to get session info differently since the Agent class
-          // doesn't have the same session property structure as BskyAgent
+        console.log('🔄 Processing OAuth callback at:', window.location.href)
+        setStatus('processing')
 
-          // Get session information from the OAuth agent
-          // For OAuth, we need to call com.atproto.server.getSession to get the current session info
-          const sessionInfo = await agent.com.atproto.server.getSession()
-          const did = sessionInfo.data.did
+        const result = await handleOAuthCallback()
 
-          // Get profile info
-          const profile = await agent.app.bsky.actor.getProfile({actor: did})
+        if (!result) {
+          console.error('❌ OAuth callback failed: No result returned')
+          setStatus('error')
+          setTimeout(() => {
+            if (isWeb) window.location.href = '/'
+          }, 2000)
+          return
+        }
 
-          // Create session data for the OAuth login
-          const sessionData = {
-            service: 'https://bsky.social',
-            handle: profile.data.handle,
-            did: did,
-            email: sessionInfo.data.email || '', // OAuth may provide email
-            emailConfirmed: sessionInfo.data.emailConfirmed || false,
-            emailAuthFactor: sessionInfo.data.emailAuthFactor || false,
-            accessJwt: '', // OAuth uses different auth mechanism
-            refreshJwt: '', // OAuth handles refresh internally
-            active: sessionInfo.data.active || true,
-            status: (sessionInfo.data.status as any) || 'active',
-            signupQueued: false,
-            pdsUrl: undefined,
-            isSelfHosted: false,
-          }
+        const {agent, oauthSession} = result
+        console.log('✅ OAuth session received successfully')
+        setStatus('extracting')
 
-          // Add the account to persisted storage
-          const currentAccounts = persisted.get('session').accounts
-          const existingIndex = currentAccounts.findIndex(
-            acc => acc.did === sessionData.did,
-          )
+        console.log('📝 Creating OAuth session account')
+        setStatus('logging_in')
 
-          if (existingIndex >= 0) {
-            // Update existing account
-            currentAccounts[existingIndex] = sessionData
-          } else {
-            // Add new account
-            currentAccounts.unshift(sessionData)
-          }
+        // Create proper OAuth session account using the OAuthSession
+        const oauthAccount = await createOAuthSessionAccount(
+          agent,
+          oauthSession,
+        )
 
-          persisted.write('session', {accounts: currentAccounts})
+        // Write directly to persisted storage using the expected format
+        const persisted = await import('#/state/persisted')
+        const currentStorage = persisted.get('session') || {accounts: []}
 
-          logger.info('OAuth login successful')
-
-          // Redirect to home page - the session provider will pick up the new account
-          if (isWeb) {
-            window.location.href = '/'
-          }
+        // Remove any existing account with same DID
+        const existingIndex = currentStorage.accounts.findIndex(
+          (acc: any) => acc.did === oauthAccount.did,
+        )
+        if (existingIndex >= 0) {
+          currentStorage.accounts[existingIndex] = oauthAccount
         } else {
-          logger.error('OAuth callback failed: No agent returned')
-          // Navigate back to login screen or show error
+          currentStorage.accounts.unshift(oauthAccount)
+        }
+
+        // Set as current account
+        const newSessionData = {
+          accounts: currentStorage.accounts,
+          currentAccount: oauthAccount,
+        }
+
+        persisted.write('session', newSessionData)
+
+        console.log(
+          '✅ OAuth session saved to storage with handle:',
+          oauthAccount.handle,
+        )
+        setStatus('success')
+
+        // Hide the logged out view
+        setShowLoggedOut(false)
+
+        // Force a page reload to reinitialize the session system
+        setTimeout(() => {
           if (isWeb) {
             window.location.href = '/'
           }
-        }
+        }, 500)
       } catch (error) {
+        console.error('❌ OAuth callback processing failed:', error)
         logger.error('OAuth callback processing failed:', {error})
-        // Navigate back to login screen
-        if (isWeb) {
-          window.location.href = '/'
-        }
+        setStatus('error')
+
+        setTimeout(() => {
+          if (isWeb) {
+            window.location.href = '/?error=oauth_failed'
+          }
+        }, 2000)
       }
     }
 
     processOAuthCallback()
-  }, [])
+  }, [login, setShowLoggedOut])
+
+  const getStatusMessage = () => {
+    switch (status) {
+      case 'processing':
+        return 'Processing OAuth callback...'
+      case 'extracting':
+        return 'Extracting user information...'
+      case 'logging_in':
+        return 'Creating your session...'
+      case 'success':
+        return 'Success! Redirecting...'
+      case 'error':
+        return 'Error occurred. Redirecting...'
+      default:
+        return 'Completing sign in...'
+    }
+  }
 
   return (
     <CenteredView
@@ -101,7 +130,8 @@ export function OAuthCallbackScreen() {
         <Text style={[a.text_lg, a.font_bold]}>
           <Trans>Completing sign in...</Trans>
         </Text>
-        <Text style={[a.text_md, a.text_center]}>
+        <Text style={[a.text_md, a.text_center]}>{getStatusMessage()}</Text>
+        <Text style={[a.text_sm, a.text_center, a.opacity_70]}>
           <Trans>
             Please wait while we complete your OAuth sign in with bsky.social
           </Trans>

@@ -96,7 +96,10 @@ export async function startOAuthLogin(handle?: string): Promise<void> {
 /**
  * Handle OAuth callback after redirect from bsky.social
  */
-export async function handleOAuthCallback(): Promise<Agent | null> {
+export async function handleOAuthCallback(): Promise<{
+  agent: Agent
+  oauthSession: any
+} | null> {
   try {
     const client = await initOAuthClient()
 
@@ -109,9 +112,96 @@ export async function handleOAuthCallback(): Promise<Agent | null> {
     // Create an Agent with the OAuth session
     const agent = new Agent(result.session)
 
-    return agent
+    return {
+      agent,
+      oauthSession: result.session,
+    }
   } catch (error) {
     console.error('OAuth callback handling failed:', error)
     return null
+  }
+}
+
+/**
+ * Check if we're currently in an OAuth callback
+ */
+export function isOAuthCallback(): boolean {
+  if (!isWeb) return false
+
+  return (
+    window.location.pathname === '/oauth/callback' ||
+    window.location.search.includes('code=') ||
+    window.location.search.includes('state=')
+  )
+}
+
+/**
+ * Get the current OAuth session if available
+ */
+export async function getCurrentOAuthSession(): Promise<{
+  agent: Agent
+  oauthSession: any
+} | null> {
+  try {
+    const client = await initOAuthClient()
+    const result = await client.init()
+
+    if (!result || !result.session) {
+      return null
+    }
+
+    // Create agent with session
+    const agent = new Agent(result.session)
+
+    return {
+      agent,
+      oauthSession: result.session,
+    }
+  } catch (error) {
+    console.error('Failed to get OAuth session:', error)
+    return null
+  }
+}
+
+/**
+ * Create session account data from OAuth session
+ */
+export async function createOAuthSessionAccount(
+  agent: Agent,
+  oauthSession: any,
+) {
+  try {
+    // Get session information from the OAuth agent
+    const sessionInfo = await agent.com.atproto.server.getSession()
+    const did = sessionInfo.data.did
+
+    // Get profile info
+    const profile = await agent.app.bsky.actor.getProfile({actor: did})
+
+    // Create session account data that marks this as an OAuth session
+    const account = {
+      service: 'https://bsky.social',
+      handle: profile.data.handle,
+      did: did,
+      email: sessionInfo.data.email || '',
+      emailConfirmed: sessionInfo.data.emailConfirmed || false,
+      emailAuthFactor: sessionInfo.data.emailAuthFactor || false,
+      // Mark this as an OAuth session with special tokens
+      accessJwt: `oauth:${did}:access`,
+      refreshJwt: `oauth:${did}:refresh`,
+      active: sessionInfo.data.active !== false,
+      status: sessionInfo.data.status || 'active',
+      signupQueued: false,
+      pdsUrl: undefined,
+      isSelfHosted: false,
+      // Store OAuth session metadata
+      _isOAuth: true,
+      _oauthSessionId: oauthSession.sub || did,
+    }
+
+    return account
+  } catch (error) {
+    console.error('Failed to create OAuth session account:', error)
+    throw error
   }
 }
