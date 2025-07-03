@@ -76,19 +76,9 @@ export async function initOAuthClient(): Promise<BrowserOAuthClient> {
     })
 
     try {
-      // Use inline metadata instead of loading from URL for dev server
+      // Use the client metadata from our deployed URL
       oauthClient = new BrowserOAuthClient({
-        clientMetadata: {
-          client_id: clientId,
-          client_name: 'Skyfi',
-          redirect_uris: [redirectUri],
-          scope: OAUTH_SCOPE,
-          grant_types: ['authorization_code'],
-          response_types: ['code'],
-          token_endpoint_auth_method: 'none',
-          application_type: 'web',
-          dpop_bound_access_tokens: true,
-        },
+        clientId: clientId,
         handleResolver: 'https://bsky.social',
       })
 
