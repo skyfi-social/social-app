@@ -33,16 +33,19 @@ const outputFile = entrypoints
   .join('\n')
 fs.writeFileSync(templateFile, outputFile)
 
-function copyFiles(sourceDir, targetDir) {
-  const files = fs.readdirSync(path.join(projectRoot, sourceDir))
-  files.forEach(file => {
-    const sourcePath = path.join(projectRoot, sourceDir, file)
-    const targetPath = path.join(projectRoot, targetDir, file)
-    fs.copyFileSync(sourcePath, targetPath)
-    console.log(`Copied ${sourcePath} to ${targetPath}`)
-  })
-}
+// Copy client-metadata.json to web-build for Cloudflare Pages deployment
+const clientMetadataSource = path.join(
+  projectRoot,
+  'public/client-metadata.json',
+)
+const clientMetadataTarget = path.join(
+  projectRoot,
+  'web-build/client-metadata.json',
+)
 
-copyFiles('web-build/static/js', 'bskyweb/static/js')
-copyFiles('web-build/static/css', 'bskyweb/static/css')
-copyFiles('web-build/static/media', 'bskyweb/static/media')
+if (fs.existsSync(clientMetadataSource)) {
+  fs.copyFileSync(clientMetadataSource, clientMetadataTarget)
+  console.log(`Copied client-metadata.json to web-build`)
+} else {
+  console.warn('Warning: client-metadata.json not found in public directory')
+}
