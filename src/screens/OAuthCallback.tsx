@@ -53,43 +53,70 @@ export function OAuthCallbackScreen() {
           oauthSession,
         )
 
-        // Write directly to persisted storage using the expected format
-        const persisted = await import('#/state/persisted')
-        const currentStorage = persisted.get('session') || {accounts: []}
+        console.log('🔧 Using session API to resume OAuth session...')
 
-        // Remove any existing account with same DID
-        const existingIndex = currentStorage.accounts.findIndex(
-          (acc: any) => acc.did === oauthAccount.did,
-        )
-        if (existingIndex >= 0) {
-          currentStorage.accounts[existingIndex] = oauthAccount
-        } else {
-          currentStorage.accounts.unshift(oauthAccount)
-        }
+        // Use the session API to properly resume the OAuth session
+        try {
+          await login(oauthAccount, 'oauth')
 
-        // Set as current account
-        const newSessionData = {
-          accounts: currentStorage.accounts,
-          currentAccount: oauthAccount,
-        }
+          console.log(
+            '✅ OAuth session resumed successfully with handle:',
+            oauthAccount.handle,
+          )
+          setStatus('success')
 
-        persisted.write('session', newSessionData)
+          // Hide the logged out view
+          setShowLoggedOut(false)
 
-        console.log(
-          '✅ OAuth session saved to storage with handle:',
-          oauthAccount.handle,
-        )
-        setStatus('success')
+          // Navigate to home instead of forcing reload
+          setTimeout(() => {
+            if (isWeb) {
+              window.location.href = '/'
+            }
+          }, 500)
+        } catch (sessionError) {
+          console.error('❌ Session API login failed:', sessionError)
 
-        // Hide the logged out view
-        setShowLoggedOut(false)
+          // Fallback to direct storage manipulation if session API fails
+          console.log('🔄 Falling back to direct storage manipulation...')
 
-        // Force a page reload to reinitialize the session system
-        setTimeout(() => {
-          if (isWeb) {
-            window.location.href = '/'
+          const persisted = await import('#/state/persisted')
+          const currentStorage = persisted.get('session') || {accounts: []}
+
+          // Remove any existing account with same DID
+          const existingIndex = currentStorage.accounts.findIndex(
+            (acc: any) => acc.did === oauthAccount.did,
+          )
+          if (existingIndex >= 0) {
+            currentStorage.accounts[existingIndex] = oauthAccount
+          } else {
+            currentStorage.accounts.unshift(oauthAccount)
           }
-        }, 500)
+
+          // Set as current account
+          const newSessionData = {
+            accounts: currentStorage.accounts,
+            currentAccount: oauthAccount,
+          }
+
+          persisted.write('session', newSessionData)
+
+          console.log(
+            '✅ OAuth session saved to storage with handle:',
+            oauthAccount.handle,
+          )
+          setStatus('success')
+
+          // Hide the logged out view
+          setShowLoggedOut(false)
+
+          // Force a page reload to reinitialize the session system
+          setTimeout(() => {
+            if (isWeb) {
+              window.location.href = '/'
+            }
+          }, 500)
+        }
       } catch (error) {
         console.error('❌ OAuth callback processing failed:', error)
         logger.error('OAuth callback processing failed:', {error})

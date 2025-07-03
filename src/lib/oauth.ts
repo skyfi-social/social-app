@@ -178,7 +178,18 @@ export async function createOAuthSessionAccount(
     // Get profile info
     const profile = await agent.app.bsky.actor.getProfile({actor: did})
 
-    // Create session account data that marks this as an OAuth session
+    // Extract real tokens from the OAuth session
+    // The OAuthSession should contain actual JWT tokens
+    const accessJwt = oauthSession.accessJwt || oauthSession.access_token
+    const refreshJwt = oauthSession.refreshJwt || oauthSession.refresh_token
+
+    console.log('🔑 OAuth session tokens:', {
+      hasAccessJwt: !!accessJwt,
+      hasRefreshJwt: !!refreshJwt,
+      oauthSessionKeys: Object.keys(oauthSession),
+    })
+
+    // Create session account data using real tokens from OAuth session
     const account = {
       service: 'https://bsky.social',
       handle: profile.data.handle,
@@ -186,9 +197,9 @@ export async function createOAuthSessionAccount(
       email: sessionInfo.data.email || '',
       emailConfirmed: sessionInfo.data.emailConfirmed || false,
       emailAuthFactor: sessionInfo.data.emailAuthFactor || false,
-      // Mark this as an OAuth session with special tokens
-      accessJwt: `oauth:${did}:access`,
-      refreshJwt: `oauth:${did}:refresh`,
+      // Use real JWT tokens from OAuth session
+      accessJwt: accessJwt,
+      refreshJwt: refreshJwt,
       active: sessionInfo.data.active !== false,
       status: sessionInfo.data.status || 'active',
       signupQueued: false,

@@ -45,7 +45,10 @@ module.exports = function (api) {
     ],
     env: {
       production: {
-        plugins: ['transform-remove-console'],
+        plugins: [
+          // Temporarily disabled for OAuth debugging
+          // 'transform-remove-console',
+        ],
       },
     },
   }
