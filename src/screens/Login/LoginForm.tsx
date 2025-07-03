@@ -100,10 +100,18 @@ export const LoginForm = ({
     try {
       // Use OAuth flow for web, fallback to traditional login for mobile
       if (isWeb) {
-        console.log('LoginForm: Starting OAuth flow for user:', identifier)
-        await startOAuthLogin(identifier)
-        console.log('OAuth login initiated successfully')
-        // If successful, the user will be redirected
+        console.log('🌐 LoginForm: Starting OAuth flow for user:', identifier)
+        console.log('🌐 LoginForm: Platform check - isWeb:', isWeb)
+        console.log('🌐 LoginForm: Window location:', window.location.href)
+
+        try {
+          await startOAuthLogin(identifier)
+          console.log('✅ OAuth login initiated successfully')
+          // If successful, the user will be redirected
+        } catch (oauthError) {
+          console.error('🚨 OAuth call threw error:', oauthError)
+          throw oauthError // Re-throw to be caught by outer catch
+        }
       } else {
         // For mobile platforms, fall back to traditional login flow
         const password = passwordValueRef.current
@@ -158,10 +166,16 @@ export const LoginForm = ({
 
       if (isWeb) {
         // Handle OAuth errors
-        console.error('OAuth login failed:', e)
+        console.error('🚨 OAuth login failed - Full error object:', e)
+        console.error('🚨 Error string representation:', errMsg)
+        console.error('🚨 Error type:', typeof e)
+        console.error('🚨 Error constructor:', e.constructor?.name)
+
         if (errMsg.includes('https') || errMsg.includes('HTTPS')) {
+          console.log('🔒 HTTPS-related error detected')
           setError(_(msg`OAuth requires HTTPS. Using development server.`))
         } else if (errMsg.includes('Failed to resolve identity')) {
+          console.log('👤 Identity resolution error detected')
           // Extract the handle from the error message for better UX
           const handleMatch = errMsg.match(/Failed to resolve identity: (.+)/)
           const handle = handleMatch ? handleMatch[1] : 'handle'
@@ -171,12 +185,20 @@ export const LoginForm = ({
             ),
           )
         } else if (errMsg.includes('OAuthResolverError')) {
+          console.log('🔍 OAuth resolver error detected')
           setError(
             _(
               msg`Unable to find your account. Please check your username or handle and try again.`,
             ),
           )
         } else {
+          console.log('❓ Unknown OAuth error - showing generic message')
+          console.log('❓ Error details for debugging:', {
+            message: e.message,
+            name: e.name,
+            stack: e.stack,
+            errorString: errMsg,
+          })
           setError(_(msg`OAuth login failed. Please try again.`))
         }
         onAttemptFailed()
