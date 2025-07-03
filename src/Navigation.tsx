@@ -71,6 +71,7 @@ import {MessagesSettingsScreen} from '#/screens/Messages/Settings'
 import {ModerationScreen} from '#/screens/Moderation'
 import {Screen as ModerationVerificationSettings} from '#/screens/Moderation/VerificationSettings'
 import {Screen as ModerationInteractionSettings} from '#/screens/ModerationInteractionSettings'
+import {OAuthCallbackScreen} from '#/screens/OAuthCallback'
 import {PostLikedByScreen} from '#/screens/Post/PostLikedBy'
 import {PostQuotesScreen} from '#/screens/Post/PostQuotes'
 import {PostRepostedByScreen} from '#/screens/Post/PostRepostedBy'
@@ -337,6 +338,11 @@ function commonScreens(Stack: typeof Flat, unreadCountLabel?: string) {
         name="WalletSettings"
         getComponent={() => WalletSettingsScreen}
         options={{title: title(msg`Wallet`), requireAuth: true}}
+      />
+      <Stack.Screen
+        name="OAuthCallback"
+        getComponent={() => OAuthCallbackScreen}
+        options={{title: title(msg`Completing Sign In...`), requireAuth: false}}
       />
       <Stack.Screen
         name="SavedFeeds"

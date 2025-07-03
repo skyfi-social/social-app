@@ -14,10 +14,12 @@ import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
 import {useRequestNotificationsPermission} from '#/lib/notifications/notifications'
+import {startOAuthLogin} from '#/lib/oauth'
 import {isNetworkError} from '#/lib/strings/errors'
 import {cleanError} from '#/lib/strings/errors'
 import {createFullHandle} from '#/lib/strings/handles'
 import {logger} from '#/logger'
+import {isWeb} from '#/platform/detection'
 import {useSetHasCheckedForStarterPack} from '#/state/preferences/used-starter-packs'
 import {useSessionApi} from '#/state/session'
 import {useLoggedOutViewControls} from '#/state/shell/logged-out'
@@ -87,91 +89,130 @@ export const LoginForm = ({
     setError('')
 
     const identifier = identifierValueRef.current.toLowerCase().trim()
-    const password = passwordValueRef.current
-    const authFactorToken = authFactorTokenValueRef.current
 
     if (!identifier) {
       setError(_(msg`Please enter your username`))
       return
     }
 
-    if (!password) {
-      setError(_(msg`Please enter your password`))
-      return
-    }
-
     setIsProcessing(true)
 
     try {
-      // try to guess the handle if the user just gave their own username
-      let fullIdent = identifier
-      if (
-        !identifier.includes('@') && // not an email
-        !identifier.includes('.') && // not a domain
-        serviceDescription &&
-        serviceDescription.availableUserDomains.length > 0
-      ) {
-        let matched = false
-        for (const domain of serviceDescription.availableUserDomains) {
-          if (fullIdent.endsWith(domain)) {
-            matched = true
+      // Use OAuth flow for web, fallback to traditional login for mobile
+      if (isWeb) {
+        console.log('LoginForm: Starting OAuth flow for user:', identifier)
+        await startOAuthLogin(identifier)
+        console.log('OAuth login initiated successfully')
+        // If successful, the user will be redirected
+      } else {
+        // For mobile platforms, fall back to traditional login flow
+        const password = passwordValueRef.current
+        const authFactorToken = authFactorTokenValueRef.current
+
+        if (!password) {
+          setError(_(msg`Please enter your password`))
+          setIsProcessing(false)
+          return
+        }
+
+        // try to guess the handle if the user just gave their own username
+        let fullIdent = identifier
+        if (
+          !identifier.includes('@') && // not an email
+          !identifier.includes('.') && // not a domain
+          serviceDescription &&
+          serviceDescription.availableUserDomains.length > 0
+        ) {
+          let matched = false
+          for (const domain of serviceDescription.availableUserDomains) {
+            if (fullIdent.endsWith(domain)) {
+              matched = true
+            }
+          }
+          if (!matched) {
+            fullIdent = createFullHandle(
+              identifier,
+              serviceDescription.availableUserDomains[0],
+            )
           }
         }
-        if (!matched) {
-          fullIdent = createFullHandle(
-            identifier,
-            serviceDescription.availableUserDomains[0],
-          )
-        }
-      }
 
-      // TODO remove double login
-      await login(
-        {
-          service: serviceUrl,
-          identifier: fullIdent,
-          password,
-          authFactorToken: authFactorToken.trim(),
-        },
-        'LoginForm',
-      )
-      onAttemptSuccess()
-      setShowLoggedOut(false)
-      setHasCheckedForStarterPack(true)
-      requestNotificationsPermission('Login')
+        await login(
+          {
+            service: serviceUrl,
+            identifier: fullIdent,
+            password,
+            authFactorToken: authFactorToken.trim(),
+          },
+          'LoginForm',
+        )
+        onAttemptSuccess()
+        setShowLoggedOut(false)
+        setHasCheckedForStarterPack(true)
+        requestNotificationsPermission('Login')
+      }
     } catch (e: any) {
       const errMsg = e.toString()
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
       setIsProcessing(false)
-      if (
-        e instanceof ComAtprotoServerCreateSession.AuthFactorTokenRequiredError
-      ) {
-        setIsAuthFactorTokenNeeded(true)
-      } else {
-        onAttemptFailed()
-        if (errMsg.includes('Token is invalid')) {
-          logger.debug('Failed to login due to invalid 2fa token', {
-            error: errMsg,
-          })
-          setError(_(msg`Invalid 2FA confirmation code.`))
-        } else if (
-          errMsg.includes('Authentication Required') ||
-          errMsg.includes('Invalid identifier or password')
-        ) {
-          logger.debug('Failed to login due to invalid credentials', {
-            error: errMsg,
-          })
-          setError(_(msg`Incorrect username or password`))
-        } else if (isNetworkError(e)) {
-          logger.warn('Failed to login due to network error', {error: errMsg})
+
+      if (isWeb) {
+        // Handle OAuth errors
+        console.error('OAuth login failed:', e)
+        if (errMsg.includes('https') || errMsg.includes('HTTPS')) {
+          setError(_(msg`OAuth requires HTTPS. Using development server.`))
+        } else if (errMsg.includes('Failed to resolve identity')) {
+          // Extract the handle from the error message for better UX
+          const handleMatch = errMsg.match(/Failed to resolve identity: (.+)/)
+          const handle = handleMatch ? handleMatch[1] : 'handle'
           setError(
             _(
-              msg`Unable to contact your service. Please check your Internet connection.`,
+              msg`Handle "${handle}" not found. Please check your username or handle and try again.`,
+            ),
+          )
+        } else if (errMsg.includes('OAuthResolverError')) {
+          setError(
+            _(
+              msg`Unable to find your account. Please check your username or handle and try again.`,
             ),
           )
         } else {
-          logger.warn('Failed to login', {error: errMsg})
-          setError(cleanError(errMsg))
+          setError(_(msg`OAuth login failed. Please try again.`))
+        }
+        onAttemptFailed()
+      } else {
+        // Handle traditional login errors
+        if (
+          e instanceof
+          ComAtprotoServerCreateSession.AuthFactorTokenRequiredError
+        ) {
+          setIsAuthFactorTokenNeeded(true)
+        } else {
+          onAttemptFailed()
+          if (errMsg.includes('Token is invalid')) {
+            logger.debug('Failed to login due to invalid 2fa token', {
+              error: errMsg,
+            })
+            setError(_(msg`Invalid 2FA confirmation code.`))
+          } else if (
+            errMsg.includes('Authentication Required') ||
+            errMsg.includes('Invalid identifier or password')
+          ) {
+            logger.debug('Failed to login due to invalid credentials', {
+              error: errMsg,
+            })
+            setError(_(msg`Incorrect username or password`))
+          } else if (isNetworkError(e)) {
+            logger.warn('Failed to login due to network error', {error: errMsg})
+            setError(
+              _(
+                msg`Unable to contact your service. Please check your Internet connection.`,
+              ),
+            )
+          } else {
+            logger.warn('Failed to login', {error: errMsg})
+            setError(cleanError(errMsg))
+          }
         }
       }
     }
@@ -179,16 +220,19 @@ export const LoginForm = ({
 
   return (
     <FormContainer testID="loginForm" titleText={<Trans>Sign in</Trans>}>
-      <View>
-        <TextField.LabelText>
-          <Trans>Hosting provider</Trans>
-        </TextField.LabelText>
-        <HostingProvider
-          serviceUrl={serviceUrl}
-          onSelectServiceUrl={setServiceUrl}
-          onOpenDialog={onPressSelectService}
-        />
-      </View>
+      {/* Hide hosting provider selection for web (OAuth), show for mobile */}
+      {!isWeb && (
+        <View>
+          <TextField.LabelText>
+            <Trans>Hosting provider</Trans>
+          </TextField.LabelText>
+          <HostingProvider
+            serviceUrl={serviceUrl}
+            onSelectServiceUrl={setServiceUrl}
+            onOpenDialog={onPressSelectService}
+          />
+        </View>
+      )}
       <View>
         <TextField.LabelText>
           <Trans>Account</Trans>
@@ -198,71 +242,85 @@ export const LoginForm = ({
             <TextField.Icon icon={At} />
             <TextField.Input
               testID="loginUsernameInput"
-              label={_(msg`Username or email address`)}
+              label={_(
+                isWeb
+                  ? msg`Username or handle`
+                  : msg`Username or email address`,
+              )}
               autoCapitalize="none"
               autoFocus
               autoCorrect={false}
               autoComplete="username"
-              returnKeyType="next"
+              returnKeyType={isWeb ? 'done' : 'next'}
               textContentType="username"
               defaultValue={initialHandle || ''}
               onChangeText={v => {
                 identifierValueRef.current = v
               }}
-              onSubmitEditing={() => {
-                passwordRef.current?.focus()
-              }}
+              onSubmitEditing={
+                isWeb
+                  ? onPressNext
+                  : () => {
+                      passwordRef.current?.focus()
+                    }
+              }
               blurOnSubmit={false} // prevents flickering due to onSubmitEditing going to next field
               editable={!isProcessing}
               accessibilityHint={_(
-                msg`Enter the username or email address you used when you created your account`,
+                isWeb
+                  ? msg`Enter your Bluesky username or handle (e.g. alice.bsky.social)`
+                  : msg`Enter the username or email address you used when you created your account`,
               )}
             />
           </TextField.Root>
 
-          <TextField.Root>
-            <TextField.Icon icon={Lock} />
-            <TextField.Input
-              testID="loginPasswordInput"
-              inputRef={passwordRef}
-              label={_(msg`Password`)}
-              autoCapitalize="none"
-              autoCorrect={false}
-              autoComplete="password"
-              returnKeyType="done"
-              enablesReturnKeyAutomatically={true}
-              secureTextEntry={true}
-              textContentType="password"
-              clearButtonMode="while-editing"
-              onChangeText={v => {
-                passwordValueRef.current = v
-              }}
-              onSubmitEditing={onPressNext}
-              blurOnSubmit={false} // HACK: https://github.com/facebook/react-native/issues/21911#issuecomment-558343069 Keyboard blur behavior is now handled in onSubmitEditing
-              editable={!isProcessing}
-              accessibilityHint={_(msg`Enter your password`)}
-            />
-            <Button
-              testID="forgotPasswordButton"
-              onPress={onPressForgotPassword}
-              label={_(msg`Forgot password?`)}
-              accessibilityHint={_(msg`Opens password reset form`)}
-              variant="solid"
-              color="secondary"
-              style={[
-                a.rounded_sm,
-                // t.atoms.bg_contrast_100,
-                {marginLeft: 'auto', left: 6, padding: 6},
-                a.z_10,
-              ]}>
-              <ButtonText>
-                <Trans>Forgot?</Trans>
-              </ButtonText>
-            </Button>
-          </TextField.Root>
+          {/* Hide password field for web (OAuth), show for mobile */}
+          {!isWeb && (
+            <TextField.Root>
+              <TextField.Icon icon={Lock} />
+              <TextField.Input
+                testID="loginPasswordInput"
+                inputRef={passwordRef}
+                label={_(msg`Password`)}
+                autoCapitalize="none"
+                autoCorrect={false}
+                autoComplete="password"
+                returnKeyType="done"
+                enablesReturnKeyAutomatically={true}
+                secureTextEntry={true}
+                textContentType="password"
+                clearButtonMode="while-editing"
+                onChangeText={v => {
+                  passwordValueRef.current = v
+                }}
+                onSubmitEditing={onPressNext}
+                blurOnSubmit={false} // HACK: https://github.com/facebook/react-native/issues/21911#issuecomment-558343069 Keyboard blur behavior is now handled in onSubmitEditing
+                editable={!isProcessing}
+                accessibilityHint={_(msg`Enter your password`)}
+              />
+              <Button
+                testID="forgotPasswordButton"
+                onPress={onPressForgotPassword}
+                label={_(msg`Forgot password?`)}
+                accessibilityHint={_(msg`Opens password reset form`)}
+                variant="solid"
+                color="secondary"
+                style={[
+                  a.rounded_sm,
+                  // t.atoms.bg_contrast_100,
+                  {marginLeft: 'auto', left: 6, padding: 6},
+                  a.z_10,
+                ]}>
+                <ButtonText>
+                  <Trans>Forgot?</Trans>
+                </ButtonText>
+              </Button>
+            </TextField.Root>
+          )}
         </View>
       </View>
-      {isAuthFactorTokenNeeded && (
+      {/* Only show 2FA for traditional login (non-web) */}
+      {!isWeb && isAuthFactorTokenNeeded && (
         <View>
           <TextField.LabelText>
             <Trans>2FA Confirmation</Trans>
@@ -304,6 +362,18 @@ export const LoginForm = ({
           </Text>
         </View>
       )}
+
+      {/* Show OAuth explanation for web users */}
+      {isWeb && (
+        <View style={[a.mt_md]}>
+          <Text style={[a.text_sm, t.atoms.text_contrast_medium]}>
+            <Trans>
+              Enter your Bluesky username or handle. You'll be securely
+              redirected to bsky.social to complete sign in.
+            </Trans>
+          </Text>
+        </View>
+      )}
       <FormError error={error} />
       <View style={[a.flex_row, a.align_center, a.pt_md]}>
         <Button
@@ -340,14 +410,22 @@ export const LoginForm = ({
         ) : (
           <Button
             testID="loginNextButton"
-            label={_(msg`Next`)}
-            accessibilityHint={_(msg`Navigates to the next screen`)}
+            label={_(isWeb ? msg`Sign in with Bluesky` : msg`Next`)}
+            accessibilityHint={_(
+              isWeb
+                ? msg`Start OAuth sign in with Bluesky`
+                : msg`Navigates to the next screen`,
+            )}
             variant="solid"
             color="primary"
             size="large"
             onPress={onPressNext}>
             <ButtonText>
-              <Trans>Next</Trans>
+              {isWeb ? (
+                <Trans>Sign in with Bluesky</Trans>
+              ) : (
+                <Trans>Next</Trans>
+              )}
             </ButtonText>
             {isProcessing && <ButtonIcon icon={Loader} />}
           </Button>

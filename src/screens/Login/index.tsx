@@ -7,6 +7,7 @@ import {useLingui} from '@lingui/react'
 import {DEFAULT_SERVICE} from '#/lib/constants'
 import {logEvent} from '#/lib/statsig/statsig'
 import {logger} from '#/logger'
+import {isWeb} from '#/platform/detection'
 import {useServiceQuery} from '#/state/queries/service'
 import {type SessionAccount, useSession} from '#/state/session'
 import {useLoggedOutView} from '#/state/shell/logged-out'
@@ -120,7 +121,11 @@ export const Login = ({onPressBack}: {onPressBack: () => void}) => {
   switch (currentForm) {
     case Forms.Login:
       title = _(msg`Sign in`)
-      description = _(msg`Enter your username and password`)
+      description = _(
+        isWeb
+          ? msg`Enter your Bluesky username or handle`
+          : msg`Enter your username and password`,
+      )
       content = (
         <LoginForm
           error={error}
