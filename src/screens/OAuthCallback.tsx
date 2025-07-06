@@ -3,7 +3,7 @@ import {View} from 'react-native'
 import {Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
-import {createOAuthSessionAccount, handleOAuthCallback} from '#/lib/oauth'
+import {handleOAuthCallback} from '#/lib/oauth'
 import {logger} from '#/logger'
 import {isWeb} from '#/platform/detection'
 import {useSessionApi} from '#/state/session'
@@ -29,7 +29,17 @@ export function OAuthCallbackScreen() {
         console.log('🔄 Processing OAuth callback at:', window.location.href)
         setStatus('processing')
 
-        const result = await handleOAuthCallback()
+        // Extract URL parameters for OAuth callback (check both query string and fragment)
+        let urlParams = new URLSearchParams(window.location.search)
+
+        // If no parameters in query string, check the fragment (hash)
+        if (urlParams.toString() === '' && window.location.hash) {
+          // Remove the leading '#' and parse as query string
+          const fragmentParams = window.location.hash.substring(1)
+          urlParams = new URLSearchParams(fragmentParams)
+        }
+
+        const result = await handleOAuthCallback(urlParams)
 
         if (!result) {
           console.error('❌ OAuth callback failed: No result returned')
@@ -38,84 +48,6 @@ export function OAuthCallbackScreen() {
             if (isWeb) window.location.href = '/'
           }, 2000)
           return
-        }
-
-        const {agent, oauthSession} = result
-        console.log('✅ OAuth session received successfully')
-        setStatus('extracting')
-
-        console.log('📝 Creating OAuth session account')
-        setStatus('logging_in')
-
-        // Create proper OAuth session account using the OAuthSession
-        const oauthAccount = await createOAuthSessionAccount(
-          agent,
-          oauthSession,
-        )
-
-        console.log('🔧 Using session API to resume OAuth session...')
-
-        // Use the session API to properly resume the OAuth session
-        try {
-          await login(oauthAccount, 'oauth')
-
-          console.log(
-            '✅ OAuth session resumed successfully with handle:',
-            oauthAccount.handle,
-          )
-          setStatus('success')
-
-          // Hide the logged out view
-          setShowLoggedOut(false)
-
-          // Navigate to home instead of forcing reload
-          setTimeout(() => {
-            if (isWeb) {
-              window.location.href = '/'
-            }
-          }, 500)
-        } catch (sessionError) {
-          console.error('❌ Session API login failed:', sessionError)
-
-          // Fallback to direct storage manipulation if session API fails
-          console.log('🔄 Falling back to direct storage manipulation...')
-
-          const persisted = await import('#/state/persisted')
-          const currentStorage = persisted.get('session') || {accounts: []}
-
-          // Remove any existing account with same DID
-          const existingIndex = currentStorage.accounts.findIndex(
-            (acc: any) => acc.did === oauthAccount.did,
-          )
-          if (existingIndex >= 0) {
-            currentStorage.accounts[existingIndex] = oauthAccount
-          } else {
-            currentStorage.accounts.unshift(oauthAccount)
-          }
-
-          // Set as current account
-          const newSessionData = {
-            accounts: currentStorage.accounts,
-            currentAccount: oauthAccount,
-          }
-
-          persisted.write('session', newSessionData)
-
-          console.log(
-            '✅ OAuth session saved to storage with handle:',
-            oauthAccount.handle,
-          )
-          setStatus('success')
-
-          // Hide the logged out view
-          setShowLoggedOut(false)
-
-          // Force a page reload to reinitialize the session system
-          setTimeout(() => {
-            if (isWeb) {
-              window.location.href = '/'
-            }
-          }, 500)
         }
       } catch (error) {
         console.error('❌ OAuth callback processing failed:', error)

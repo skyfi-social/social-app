@@ -169,9 +169,15 @@ function App() {
   const [isReady, setReady] = useState(false)
 
   React.useEffect(() => {
-    Promise.all([initPersistedState(), ensureGeolocationResolved()]).then(() =>
-      setReady(true),
-    )
+    Promise.all([
+      initPersistedState(),
+      ensureGeolocationResolved(),
+      // initOAuthClient().catch(error => {
+      //   // OAuth client initialization is not critical for app startup
+      //   // Log error but don't block app initialization
+      //   console.warn('OAuth client initialization failed:', error)
+      // })
+    ]).then(() => setReady(true))
   }, [])
 
   if (!isReady) {
