@@ -29,25 +29,22 @@ export function OAuthCallbackScreen() {
         console.log('🔄 Processing OAuth callback at:', window.location.href)
         setStatus('processing')
 
-        // Extract URL parameters for OAuth callback (check both query string and fragment)
-        let urlParams = new URLSearchParams(window.location.search)
-
-        // If no parameters in query string, check the fragment (hash)
-        if (urlParams.toString() === '' && window.location.hash) {
-          // Remove the leading '#' and parse as query string
-          const fragmentParams = window.location.hash.substring(1)
-          urlParams = new URLSearchParams(fragmentParams)
-        }
-
-        const result = await handleOAuthCallback(urlParams)
+        const result = await handleOAuthCallback()
 
         if (!result) {
           console.error('❌ OAuth callback failed: No result returned')
           setStatus('error')
+          // Pause for 30 seconds for debug purposes
+          await new Promise(resolve => setTimeout(resolve, 30000))
+
           setTimeout(() => {
             if (isWeb) window.location.href = '/'
           }, 2000)
           return
+        } else {
+          // Handle successful OAuth callback
+          console.log('✅ OAuth callback successful:', result)
+          setStatus('success')
         }
       } catch (error) {
         console.error('❌ OAuth callback processing failed:', error)
