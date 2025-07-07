@@ -17,11 +17,11 @@ const getClientMetadata = (): OAuthClientMetadataInput => {
   if (isDev) {
     // Development configuration for AT Protocol OAuth
     // For development, we use a special client_id format with redirect_uri as query param
-    const devClientMetadata: string = `http://localhost?redirect_uri=${encodeURIComponent('http://127.0.0.1:19006/oauth/callback')}`
+    const devClientMetadata: string = `http://localhost?redirect_uri=${encodeURIComponent('http://127.0.0.1:19006/oauth/callback')}&scope=${encodeURIComponent('atproto transition:generic')}`
     return {
       client_id: devClientMetadata,
       redirect_uris: [`http://127.0.0.1:19006/oauth/callback`],
-      scope: 'atproto',
+      scope: 'atproto transition:generic',
       grant_types: ['authorization_code', 'refresh_token'],
       response_types: ['code'],
       application_type: 'web',
@@ -106,7 +106,6 @@ export async function startOAuthLogin(handle?: string): Promise<void> {
     })
 
     console.log('🔧 OAuth client:', client)
-    await new Promise(resolve => setTimeout(resolve, 10000))
 
     // Initiate OAuth flow - this will redirect to the user's PDS
     const result = await client.signIn(handle, {
@@ -146,8 +145,6 @@ export async function handleOAuthCallback(): Promise<{
     if (!result || !result.session) {
       return null
     }
-    // Wait 20 seconds to see logs
-    await new Promise(resolve => setTimeout(resolve, 20000))
 
     return {
       oauthSession: result.session,
