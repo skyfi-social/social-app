@@ -65,11 +65,11 @@ export function BottomBarWeb() {
     requestSwitchToAccount({requestedAccount: 'none'})
   }, [requestSwitchToAccount, closeAllActiveElements])
 
-  const showCreateAccount = React.useCallback(() => {
-    closeAllActiveElements()
-    requestSwitchToAccount({requestedAccount: 'new'})
-    // setShowLoggedOut(true)
-  }, [requestSwitchToAccount, closeAllActiveElements])
+  // const showCreateAccount = React.useCallback(() => {
+  //   closeAllActiveElements()
+  //   requestSwitchToAccount({requestedAccount: 'new'})
+  //   // setShowLoggedOut(true)
+  // }, [requestSwitchToAccount, closeAllActiveElements])
 
   return (
     <Animated.View
@@ -201,7 +201,7 @@ export function BottomBarWeb() {
             </View>
 
             <View style={[a.flex_row, a.flex_wrap, a.gap_sm]}>
-              <Button
+              {/* <Button
                 onPress={showCreateAccount}
                 label={_(msg`Create account`)}
                 size="small"
@@ -210,7 +210,7 @@ export function BottomBarWeb() {
                 <ButtonText>
                   <Trans>Create account</Trans>
                 </ButtonText>
-              </Button>
+              </Button> */}
               <Button
                 onPress={showSignIn}
                 label={_(msg`Sign in`)}

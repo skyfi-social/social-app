@@ -23,11 +23,11 @@ import {Text} from '#/components/Typography'
 export const SplashScreen = ({
   onDismiss,
   onPressSignin,
-  onPressCreateAccount,
+  // onPressCreateAccount,
 }: {
   onDismiss?: () => void
   onPressSignin: () => void
-  onPressCreateAccount: () => void
+  // onPressCreateAccount: () => void
 }) => {
   const {_} = useLingui()
   const t = useTheme()
@@ -103,7 +103,7 @@ export const SplashScreen = ({
             <View
               testID="signinOrCreateAccount"
               style={[a.w_full, a.px_xl, a.gap_md, a.pb_2xl, {maxWidth: 320}]}>
-              <Button
+              {/* <Button
                 testID="createAccountButton"
                 onPress={onPressCreateAccount}
                 label={_(msg`Create new account`)}
@@ -116,7 +116,7 @@ export const SplashScreen = ({
                 <ButtonText>
                   <Trans>Create account</Trans>
                 </ButtonText>
-              </Button>
+              </Button> */}
               <Button
                 testID="signInButton"
                 onPress={onPressSignin}

@@ -22,11 +22,11 @@ let NavSignupCard = ({}: {}): React.ReactNode => {
     requestSwitchToAccount({requestedAccount: 'none'})
   }, [requestSwitchToAccount, closeAllActiveElements])
 
-  const showCreateAccount = React.useCallback(() => {
-    closeAllActiveElements()
-    requestSwitchToAccount({requestedAccount: 'new'})
-    // setShowLoggedOut(true)
-  }, [requestSwitchToAccount, closeAllActiveElements])
+  // const showCreateAccount = React.useCallback(() => {
+  //   closeAllActiveElements()
+  //   requestSwitchToAccount({requestedAccount: 'new'})
+  //   // setShowLoggedOut(true)
+  // }, [requestSwitchToAccount, closeAllActiveElements])
 
   return (
     <View style={[{maxWidth: 200}]}>
@@ -42,7 +42,7 @@ let NavSignupCard = ({}: {}): React.ReactNode => {
       </View>
 
       <View style={[a.flex_row, a.flex_wrap, a.gap_sm, a.pt_md]}>
-        <Button
+        {/* <Button
           onPress={showCreateAccount}
           label={_(msg`Create account`)}
           size="small"
@@ -51,7 +51,7 @@ let NavSignupCard = ({}: {}): React.ReactNode => {
           <ButtonText>
             <Trans>Create account</Trans>
           </ButtonText>
-        </Button>
+        </Button> */}
         <Button
           onPress={showSignIn}
           label={_(msg`Sign in`)}

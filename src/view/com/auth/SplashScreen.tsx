@@ -14,10 +14,10 @@ import {CenteredView} from '../util/Views'
 
 export const SplashScreen = ({
   onPressSignin,
-  onPressCreateAccount,
+  // onPressCreateAccount,
 }: {
   onPressSignin: () => void
-  onPressCreateAccount: () => void
+  // onPressCreateAccount: () => void
 }) => {
   const t = useTheme()
   const {_} = useLingui()
@@ -41,7 +41,7 @@ export const SplashScreen = ({
         <View
           testID="signinOrCreateAccount"
           style={[a.px_xl, a.gap_md, a.pb_2xl]}>
-          <Button
+          {/* <Button
             testID="createAccountButton"
             onPress={onPressCreateAccount}
             label={_(msg`Create new account`)}
@@ -54,7 +54,7 @@ export const SplashScreen = ({
             <ButtonText>
               <Trans>Create account</Trans>
             </ButtonText>
-          </Button>
+          </Button> */}
           <Button
             testID="signInButton"
             onPress={onPressSignin}
