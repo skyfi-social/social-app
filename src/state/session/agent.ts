@@ -1,5 +1,11 @@
-import {AtpSessionData, AtpSessionEvent, BskyAgent} from '@atproto/api'
+import {
+  Agent,
+  type AtpSessionData,
+  type AtpSessionEvent,
+  BskyAgent,
+} from '@atproto/api'
 import {TID} from '@atproto/common-web'
+import {type OAuthSession} from '@atproto/oauth-client-browser'
 
 import {networkRetry} from '#/lib/async/retry'
 import {
@@ -19,7 +25,7 @@ import {
   configureModerationForAccount,
   configureModerationForGuest,
 } from './moderation'
-import {SessionAccount} from './types'
+import {type SessionAccount} from './types'
 import {isSessionExpired, isSignupQueued} from './util'
 
 export function createPublicAgent() {
@@ -183,6 +189,114 @@ export async function createAgentAndCreateAccount(
   return agent.prepare(gates, moderation, onSessionChange)
 }
 
+// Create agent and account from OAuth session
+// Resume OAuth session from stored account
+export async function createAgentAndResumeOAuth(
+  storedAccount: SessionAccount,
+  onSessionChange: (
+    agent: BskyAgent,
+    did: string,
+    event: AtpSessionEvent,
+  ) => void,
+) {
+  console.log('🔄 Resuming OAuth session for:', storedAccount.did)
+
+  try {
+    // Import OAuth client to get the stored session
+    const {initOAuthClient} = await import('#/lib/oauth')
+    const oauthClient = await initOAuthClient()
+
+    // Try to get the OAuth session for this DID from the OAuth client
+    console.log('🔍 Getting OAuth session from client...')
+    const oauthSession = await oauthClient.restore(storedAccount.did)
+
+    if (!oauthSession) {
+      throw new Error(
+        'No OAuth session found for this account - user needs to re-authenticate',
+      )
+    }
+
+    console.log('✅ OAuth session restored for:', oauthSession.sub)
+
+    // Create the OAuth agent with the restored session
+    const agent = new OAuthBskyAppAgent(oauthSession)
+    console.log('✅ OAuth agent created for resume')
+
+    const gates = tryFetchGates(storedAccount.did, 'prefer-low-latency')
+    const moderation = configureModerationForAccount(
+      agent as any,
+      storedAccount,
+    )
+
+    console.log('🔄 Preparing resumed OAuth agent...')
+    const result = await agent.prepare(
+      gates,
+      moderation,
+      onSessionChange,
+      oauthSession,
+    )
+    console.log('✅ OAuth agent resumed successfully')
+
+    return result
+  } catch (error) {
+    console.error('❌ Failed to resume OAuth session:', error)
+    throw error
+  }
+}
+
+export async function createAgentAndLoginOAuth(
+  oauthSession: OAuthSession,
+  onSessionChange: (
+    agent: BskyAgent,
+    did: string,
+    event: AtpSessionEvent,
+  ) => void,
+) {
+  console.log('🔄 Creating OAuth agent for session:', oauthSession.sub)
+  console.log('🔍 OAuth session details:', {
+    sub: oauthSession.sub,
+    pdsUrl: oauthSession.pdsUrl,
+    hasServerMetadata: !!oauthSession.serverMetadata,
+    hasFetchHandler: typeof oauthSession.fetchHandler === 'function',
+  })
+
+  try {
+    const agent = new OAuthBskyAppAgent(oauthSession)
+    console.log('✅ OAuth agent created successfully')
+
+    const gates = tryFetchGates(oauthSession.sub, 'prefer-fresh-gates')
+    const moderation = configureModerationForAccount(
+      agent as any,
+      {
+        did: oauthSession.sub,
+        service: oauthSession.pdsUrl || 'https://bsky.social',
+      } as SessionAccount,
+    )
+
+    console.log('🔄 Preparing OAuth agent...')
+    const result = await agent.prepare(
+      gates,
+      moderation,
+      onSessionChange,
+      oauthSession,
+    )
+    console.log('✅ OAuth agent prepared successfully', {
+      accountDid: result.account.did,
+      accountHandle: result.account.handle,
+    })
+
+    return result
+  } catch (error) {
+    console.error('❌ Failed to create OAuth agent:', error)
+    console.error('❌ Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack?.split('\n').slice(0, 5).join('\n'),
+    })
+    throw error
+  }
+}
+
 export function agentToSessionAccountOrThrow(agent: BskyAgent): SessionAccount {
   const account = agentToSessionAccount(agent)
   if (!account) {
@@ -306,4 +420,124 @@ class BskyAppAgent extends BskyAgent {
   }
 }
 
-export type {BskyAppAgent}
+// OAuth-aware BskyAppAgent that uses OAuthSession instead of traditional JWT session management
+class OAuthBskyAppAgent extends Agent {
+  persistSessionHandler: ((event: AtpSessionEvent) => void) | undefined =
+    undefined
+
+  constructor(oauthSession: OAuthSession) {
+    // Pass the OAuth session directly to the Agent constructor
+    super(oauthSession)
+  }
+
+  async prepare(
+    gates: Promise<void>,
+    moderation: Promise<void>,
+    onSessionChange: (
+      agent: BskyAgent,
+      did: string,
+      event: AtpSessionEvent,
+    ) => void,
+    oauthSession: OAuthSession,
+  ) {
+    // Wait for gates and moderation to complete
+    await Promise.all([gates, moderation])
+
+    // Create session account from OAuth session directly
+    const account = await oauthSessionToAccount(oauthSession)
+
+    this.persistSessionHandler = event => {
+      onSessionChange(this as any, account.did, event)
+      if (event !== 'create' && event !== 'update') {
+        addSessionErrorLog(account.did, event)
+      }
+    }
+
+    return {account, agent: this as any}
+  }
+
+  dispose() {
+    this.persistSessionHandler = undefined
+  }
+}
+
+// Convert OAuth session to session account
+async function oauthSessionToAccount(
+  oauthSession: OAuthSession,
+): Promise<SessionAccount> {
+  try {
+    console.log('🔍 Getting token info from OAuth session...')
+    const tokenInfo = await oauthSession.getTokenInfo()
+    console.log('✅ Token info:', {
+      sub: tokenInfo.sub,
+      iss: tokenInfo.iss,
+      aud: tokenInfo.aud,
+      scope: tokenInfo.scope,
+      expired: tokenInfo.expired,
+      expiresAt: tokenInfo.expiresAt,
+    })
+
+    console.log(
+      '🔍 Making session request to:',
+      '/xrpc/com.atproto.server.getSession',
+    )
+    // Make a request to get session details
+    const sessionResponse = await oauthSession.fetchHandler(
+      '/xrpc/com.atproto.server.getSession',
+    )
+    console.log('📋 Session response status:', sessionResponse.status)
+
+    if (!sessionResponse.ok) {
+      const errorText = await sessionResponse.text()
+      console.error('❌ Session request failed:', errorText)
+      throw new Error(
+        `Session request failed: ${sessionResponse.status} - ${errorText}`,
+      )
+    }
+
+    const sessionData = await sessionResponse.json()
+    console.log('✅ Session data:', sessionData)
+
+    return {
+      service: oauthSession.pdsUrl || 'https://bsky.social',
+      did: oauthSession.sub,
+      handle: sessionData.handle || '',
+      email: sessionData.email || '',
+      emailConfirmed: sessionData.emailConfirmed || false,
+      emailAuthFactor: sessionData.emailAuthFactor || false,
+      refreshJwt: 'oauth-managed',
+      accessJwt: 'oauth-managed',
+      signupQueued: false,
+      active: sessionData.active !== false,
+      status: sessionData.status || 'active',
+      pdsUrl: oauthSession.pdsUrl,
+      isSelfHosted: false,
+    }
+  } catch (error) {
+    console.error('❌ Could not get session details:', error)
+    console.error('❌ Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack?.split('\n').slice(0, 3).join('\n'),
+    })
+
+    // Fallback with minimal data
+    return {
+      service: oauthSession.pdsUrl || 'https://bsky.social',
+      did: oauthSession.sub,
+      handle: '',
+      email: '',
+      emailConfirmed: false,
+      emailAuthFactor: false,
+      refreshJwt: 'oauth-managed',
+      accessJwt: 'oauth-managed',
+      signupQueued: false,
+      active: true,
+      status: 'active',
+      pdsUrl: oauthSession.pdsUrl,
+      isSelfHosted: false,
+    }
+  }
+}
+
+export type {BskyAppAgent, OAuthBskyAppAgent}

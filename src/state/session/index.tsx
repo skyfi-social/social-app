@@ -11,7 +11,9 @@ import {
   type BskyAppAgent,
   createAgentAndCreateAccount,
   createAgentAndLogin,
+  createAgentAndLoginOAuth,
   createAgentAndResume,
+  createAgentAndResumeOAuth,
   sessionAccountToSession,
 } from './agent'
 import {getInitialState, reducer} from './reducer'
@@ -36,6 +38,7 @@ const AgentContext = React.createContext<BskyAgent | null>(null)
 const ApiContext = React.createContext<SessionApiContext>({
   createAccount: async () => {},
   login: async () => {},
+  loginOAuth: async () => {},
   logoutCurrentAccount: async () => {},
   logoutEveryAccount: async () => {},
   resumeSession: async () => {},
@@ -118,6 +121,33 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
     [onAgentSessionChange, cancelPendingTask],
   )
 
+  const loginOAuth = React.useCallback<SessionApiContext['loginOAuth']>(
+    async (oauthSession, logContext = 'LoginForm') => {
+      addSessionDebugLog({type: 'method:start', method: 'loginOAuth'})
+      const signal = cancelPendingTask()
+      const {agent, account} = await createAgentAndLoginOAuth(
+        oauthSession,
+        onAgentSessionChange,
+      )
+
+      if (signal.aborted) {
+        return
+      }
+      dispatch({
+        type: 'switched-to-account',
+        newAgent: agent,
+        newAccount: account,
+      })
+      logger.metric(
+        'account:loggedIn',
+        {logContext, withPassword: false},
+        {statsig: true},
+      )
+      addSessionDebugLog({type: 'method:end', method: 'loginOAuth', account})
+    },
+    [onAgentSessionChange, cancelPendingTask],
+  )
+
   const logoutCurrentAccount = React.useCallback<
     SessionApiContext['logoutEveryAccount']
   >(
@@ -163,7 +193,44 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
         method: 'resumeSession',
         account: storedAccount,
       })
+
       const signal = cancelPendingTask()
+
+      // Handle OAuth sessions differently
+      if (storedAccount.refreshJwt === 'oauth-managed') {
+        console.log('👀 Resuming OAuth session:', storedAccount.did)
+        // For OAuth sessions, we need to get the OAuth session from the OAuth client
+        // and create an OAuth agent
+        try {
+          const {agent, account} = await createAgentAndResumeOAuth(
+            storedAccount,
+            onAgentSessionChange,
+          )
+
+          if (signal.aborted) {
+            return
+          }
+          dispatch({
+            type: 'switched-to-account',
+            newAgent: agent,
+            newAccount: account,
+          })
+          addSessionDebugLog({
+            type: 'method:end',
+            method: 'resumeSession',
+            account,
+          })
+        } catch (error) {
+          console.warn('Failed to resume OAuth session:', error)
+          addSessionDebugLog({
+            type: 'method:end',
+            method: 'resumeSession',
+            account: storedAccount,
+            error: 'oauth-resume-failed',
+          })
+        }
+        return
+      }
       const {agent, account} = await createAgentAndResume(
         storedAccount,
         onAgentSessionChange,
@@ -258,6 +325,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
     () => ({
       createAccount,
       login,
+      loginOAuth,
       logoutCurrentAccount,
       logoutEveryAccount,
       resumeSession,
@@ -266,6 +334,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
     [
       createAccount,
       login,
+      loginOAuth,
       logoutCurrentAccount,
       logoutEveryAccount,
       resumeSession,

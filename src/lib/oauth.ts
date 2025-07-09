@@ -17,6 +17,11 @@ const getClientMetadata = (): OAuthClientMetadataInput => {
   if (isDev) {
     // Development configuration for AT Protocol OAuth
     // For development, we use a special client_id format with redirect_uri as query param
+
+    // Add 'transition:chat.bsky' scope for access to chats.
+    // Add 'transition:email' scope for email verification.
+    // To encourage more people to try Skyfi in the early days we
+    // won't ask for this access. Maybe after we build some brand trust.
     const devClientMetadata: string = `http://localhost?redirect_uri=${encodeURIComponent('http://127.0.0.1:19006/oauth/callback')}&scope=${encodeURIComponent('atproto transition:generic')}`
     return {
       client_id: devClientMetadata,
@@ -85,75 +90,46 @@ export async function initOAuthClient(): Promise<BrowserOAuthClient> {
 }
 
 /**
- * Start OAuth login flow by redirecting to bsky.social (web only)
+ * Start OAuth login flow using popup (web only)
  */
-export async function startOAuthLogin(handle?: string): Promise<void> {
-  if (!isWeb) {
-    throw new Error('OAuth login is only available on web platform')
-  }
+export async function startOAuthLogin(
+  handle: string,
+): Promise<OAuthSession | null> {
+  const client = new BrowserOAuthClient({
+    clientMetadata: getClientMetadata(),
+    handleResolver: 'https://bsky.social',
+  })
 
+  // The @atproto/oauth-client-browser signInPopup method is popping up the window and not closing it if
+  // the the handle is not valid. So we need to pre-validate the handle. Remove this when the library is fixed.
   try {
-    console.log('🔍 Starting OAuth sign-in flow with handle:', handle)
-
-    if (!handle) {
-      console.error('❌ No handle provided')
-      throw new Error('No handle provided')
-    }
-
-    const client = new BrowserOAuthClient({
-      clientMetadata: getClientMetadata(),
-      handleResolver: 'https://bsky.social',
-    })
-
-    console.log('🔧 OAuth client:', client)
-
-    // Initiate OAuth flow - this will redirect to the user's PDS
-    const result = await client.signIn(handle, {
-      prompt: 'login',
-    })
-
-    console.log(
-      '⚠️ OAuth sign-in completed (this should not be reached if redirect happened): ',
-      result,
+    const response = await fetch(
+      `https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=${encodeURIComponent(handle)}`,
     )
-  } catch (error) {
-    console.error('❌ OAuth login failed - Error object:', error)
-    // Pause for 30 seconds before throwing
-    await new Promise(resolve => setTimeout(resolve, 30000))
-    throw new Error(`Failed to start OAuth login: ${error}`)
-  }
-}
-
-/**
- * Handle OAuth callback after redirect from bsky.social
- */
-export async function handleOAuthCallback(): Promise<{
-  oauthSession: OAuthSession
-} | null> {
-  try {
-    console.log(`✅ OAuth callback handling started with urlQuery`)
-
-    const client = new BrowserOAuthClient({
-      clientMetadata: getClientMetadata(),
-      handleResolver: 'https://bsky.social',
-    })
-
-    const result = await client.init()
-
-    console.log('📋 OAuth callback result:', result)
-
-    if (!result || !result.session) {
-      return null
+    if (!response.ok) {
+      throw new Error(
+        'Invalid handle. Please check your username and try again.',
+      )
     }
-
-    return {
-      oauthSession: result.session,
+    const result = await response.json()
+    if (!result.did) {
+      throw new Error(
+        'Invalid handle. Please check your username and try again.',
+      )
     }
-  } catch (error) {
-    console.error('OAuth callback handling failed: ', error)
-
-    // Pause for 30 seconds before returning null
-    await new Promise(resolve => setTimeout(resolve, 30000))
-    return null
+  } catch (validationError) {
+    console.log(
+      '❌ Handle validation failed:',
+      (validationError as Error).message,
+    )
+    throw validationError
   }
+
+  // Pass and Abort Controller to allow cancellation and that logs a warning if the popup is closed
+  // Use popup flow instead of redirect
+  const result = await client.signInPopup(handle, {
+    prompt: 'login',
+  })
+
+  return result
 }

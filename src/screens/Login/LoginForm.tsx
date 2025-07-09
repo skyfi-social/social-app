@@ -73,7 +73,7 @@ export const LoginForm = ({
   const authFactorTokenValueRef = useRef<string>('')
   const passwordRef = useRef<TextInput>(null)
   const {_} = useLingui()
-  const {login} = useSessionApi()
+  const {login, loginOAuth} = useSessionApi()
   const requestNotificationsPermission = useRequestNotificationsPermission()
   const {setShowLoggedOut} = useLoggedOutViewControls()
   const setHasCheckedForStarterPack = useSetHasCheckedForStarterPack()
@@ -101,16 +101,42 @@ export const LoginForm = ({
       // Use OAuth flow for web, fallback to traditional login for mobile
       if (isWeb) {
         console.log('🌐 LoginForm: Starting OAuth flow for user:', identifier)
-        console.log('🌐 LoginForm: Platform check - isWeb:', isWeb)
-        console.log('🌐 LoginForm: Window location:', window.location.href)
 
         try {
-          await startOAuthLogin(identifier)
-          console.log('✅ OAuth login initiated successfully')
-          // If successful, the user will be redirected
+          const oauthSession = await startOAuthLogin(identifier)
+
+          if (oauthSession) {
+            console.log(
+              '✅ OAuth popup completed successfully:',
+              oauthSession.sub,
+            )
+            // Use the OAuth session to log in through SessionProvider
+            await loginOAuth(oauthSession, 'OAuth')
+            console.log('✅ OAuth login completed successfully')
+
+            // Trigger success callbacks
+            onAttemptSuccess()
+            requestNotificationsPermission('LoginForm')
+            setHasCheckedForStarterPack(true)
+          } else {
+            console.log('👤 OAuth was cancelled or failed')
+            setError(_(msg`Sign in was cancelled`))
+          }
         } catch (oauthError) {
-          console.error('🚨 OAuth call threw error:', oauthError)
-          throw oauthError // Re-throw to be caught by outer catch
+          setIsProcessing(false)
+
+          const errMsg = (oauthError as Error).toString()
+
+          if ((oauthError as Error).message === 'OAUTH_CANCELLED') {
+            setError(_(msg`Sign in was cancelled`))
+          } else if (errMsg.includes('Invalid handle')) {
+            setError(
+              _(msg`Invalid handle. Please check your username and try again.`),
+            )
+          } else {
+            setError(_(msg`OAuth login failed. Please try again.`))
+          }
+          return
         }
       } else {
         // For mobile platforms, fall back to traditional login flow
