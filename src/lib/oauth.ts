@@ -97,10 +97,7 @@ export async function startOAuthLogin(
 ): Promise<OAuthSession | null> {
   console.log('🔧 Production OAuth config:', getClientMetadata())
 
-  const client = new BrowserOAuthClient({
-    clientMetadata: getClientMetadata(),
-    handleResolver: 'https://bsky.social',
-  })
+  const client = await initOAuthClient()
 
   // The @atproto/oauth-client-browser signInPopup method is popping up the window and not closing it if
   // the the handle is not valid. So we need to pre-validate the handle. Remove this when the library is fixed.
