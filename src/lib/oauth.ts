@@ -71,8 +71,8 @@ export async function initOAuthClient(): Promise<BrowserOAuthClient> {
 
     try {
       // Use the client metadata from our deployed URL
-      oauthClient = new BrowserOAuthClient({
-        clientMetadata: getClientMetadata(),
+      oauthClient = await BrowserOAuthClient.load({
+        clientId: 'https://app.skyfi.social/client-metadata.json',
         handleResolver: 'https://bsky.social',
       })
 
