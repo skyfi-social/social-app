@@ -469,10 +469,6 @@ msgstr "សមាជិក <0>{0}</0>"
 msgid "<0>{date}</0> at {time}"
 msgstr "<0>{date}</0> នៅ {time}"
 
-#: src/screens/Settings/NotificationSettings.tsx:85
-#~ msgid "<0>Experimental:</0> When this preference is enabled, you'll only receive reply and quote notifications from users you follow. We'll continue to add more controls here over time."
-#~ msgstr "<0>ការពិសោធន៍៖</0> នៅពេលដែលចំណូលចិត្តនេះត្រូវបានបើក អ្នកនឹងទទួលតែការជូនដំណឹងអំពីការឆ្លើយតប និងការដកស្រង់ពីអ្នកប្រើប្រាស់ដែលអ្នកតាមដានប៉ុណ្ណោះ។ យើងនឹងបន្តបន្ថែមការគ្រប់គ្រងបន្ថែមទៀតនៅទីនេះតាមពេលវេលា"
-
 #: src/screens/StarterPack/Wizard/index.tsx:440
 msgid "<0>You</0> and<1> </1><2>{0} </2>are included in your starter pack"
 msgstr "<0>អ្នក</0> និង<1> </1><2>{0}</2> ត្រូវបានរួមបញ្ចូលនៅក្នុងកញ្ចប់ចាប់ផ្តើមរបស់អ្នក"
@@ -485,7 +481,7 @@ msgstr ""
 msgid "24 hours"
 msgstr "២៤ ម៉ោង"
 
-#: src/screens/Login/LoginForm.tsx:328
+#: src/screens/Login/LoginForm.tsx:374
 msgid "2FA Confirmation"
 msgstr "ការបញ្ជាក់ 2FA"
 
@@ -506,7 +502,7 @@ msgstr ""
 msgid "A new form of verification"
 msgstr ""
 
-#: src/Navigation.tsx:502
+#: src/Navigation.tsx:496
 #: src/screens/Settings/AboutSettings.tsx:81
 #: src/screens/Settings/Settings.tsx:238
 #: src/screens/Settings/Settings.tsx:241
@@ -533,12 +529,12 @@ msgstr ""
 msgid "Accessibility"
 msgstr "ភាពងាយស្រួល"
 
-#: src/Navigation.tsx:377
+#: src/Navigation.tsx:371
 msgid "Accessibility Settings"
 msgstr "ការកំណត់មានភាពងាយស្រួល"
 
-#: src/Navigation.tsx:393
-#: src/screens/Login/LoginForm.tsx:240
+#: src/Navigation.tsx:387
+#: src/screens/Login/LoginForm.tsx:286
 #: src/screens/Settings/AccountSettings.tsx:48
 #: src/screens/Settings/Settings.tsx:166
 #: src/screens/Settings/Settings.tsx:169
@@ -871,14 +867,6 @@ msgstr ""
 msgid "An email has been sent to {0}. It includes a confirmation code which you can enter below."
 msgstr "\"អ៊ីមែល​ត្រូវ​បាន​ផ្ញើ​ទៅ {0}។ វា​រួម​បញ្ចូល​ទាំង​កូដ​បញ្ជាក់​ដែល​អ្នក​អាច​បញ្ចូល​ខាងក្រោម"
 
-#: src/components/dialogs/ChangeEmailDialog.tsx:59
-#~ msgid "An email has been sent to your previous address, {currentEmail}. It includes a confirmation code which you can enter below."
-#~ msgstr ""
-
-#: src/components/dialogs/VerifyEmailDialog.tsx:120
-#~ msgid "An email has been sent! Please enter the confirmation code included in the email below."
-#~ msgstr "អ៊ីមែលត្រូវបានផ្ញើ! សូមបញ្ចូលលេខកូដបញ្ជាក់ដែលមានក្នុងអ៊ីមែលខាងក្រោម"
-
 #: src/components/dialogs/GifSelect.tsx:265
 msgid "An error has occurred"
 msgstr "កំហុសមួយបានកើតឡើង"
@@ -990,7 +978,7 @@ msgstr ""
 msgid "Anybody can interact"
 msgstr "អ្នក​ណា​ក៏​អាច​ធ្វើ​អន្តរកម្ម"
 
-#: src/Navigation.tsx:510
+#: src/Navigation.tsx:504
 #: src/screens/Settings/AppIconSettings/index.tsx:67
 #: src/screens/Settings/AppIconSettings/SettingsListItem.tsx:18
 #: src/screens/Settings/AppIconSettings/SettingsListItem.tsx:23
@@ -1027,7 +1015,7 @@ msgstr "ឈ្មោះពាក្យសម្ងាត់កម្មវិធ
 msgid "App passwords"
 msgstr "ពាក្យសម្ងាត់កម្មវិធី"
 
-#: src/Navigation.tsx:335
+#: src/Navigation.tsx:334
 #: src/screens/Settings/AppPasswords.tsx:51
 msgid "App Passwords"
 msgstr "ពាក្យសម្ងាត់កម្មវិធី"
@@ -1063,7 +1051,7 @@ msgstr ""
 msgid "Appeal this decision"
 msgstr "ប្តឹងឧទ្ធរណ៍លើការសម្រេចចិត្តនេះ។"
 
-#: src/Navigation.tsx:385
+#: src/Navigation.tsx:379
 #: src/screens/Settings/AppearanceSettings.tsx:85
 #: src/screens/Settings/Settings.tsx:206
 #: src/screens/Settings/Settings.tsx:209
@@ -1178,8 +1166,8 @@ msgstr "ចាក់វីដេអូ និង GIFs ដោយស្វ័យ�
 #: src/screens/Login/ChooseAccountForm.tsx:95
 #: src/screens/Login/ForgotPasswordForm.tsx:123
 #: src/screens/Login/ForgotPasswordForm.tsx:129
-#: src/screens/Login/LoginForm.tsx:382
-#: src/screens/Login/LoginForm.tsx:388
+#: src/screens/Login/LoginForm.tsx:428
+#: src/screens/Login/LoginForm.tsx:434
 #: src/screens/Login/SetNewPasswordForm.tsx:168
 #: src/screens/Login/SetNewPasswordForm.tsx:174
 #: src/screens/Messages/components/ChatDisabled.tsx:133
@@ -1287,7 +1275,7 @@ msgstr "រារាំង"
 msgid "Blocked accounts"
 msgstr "គណនី​ដែល​បាន​ទប់ស្កាត់"
 
-#: src/Navigation.tsx:176
+#: src/Navigation.tsx:175
 #: src/view/screens/ModerationBlockedAccounts.tsx:104
 msgid "Blocked Accounts"
 msgstr "គណនី​ដែល​បាន​ទប់ស្កាត់"
@@ -1316,10 +1304,6 @@ msgstr "ការទប់ស្កាត់ជាសាធារណៈ។ គ�
 #: src/view/com/profile/ProfileMenu.tsx:465
 msgid "Blocking will not prevent labels from being applied on your account, but it will stop this account from replying in your threads or interacting with you."
 msgstr "ការទប់ស្កាត់នឹងមិនរារាំងស្លាកមិនឱ្យអនុវត្តនៅលើគណនីរបស់អ្នកទេ ប៉ុន្តែវានឹងបញ្ឈប់គណនីនេះពីការឆ្លើយតបនៅក្នុងខ្សែស្រឡាយរបស់អ្នក ឬធ្វើអន្តរកម្មជាមួយអ្នក"
-
-#: src/view/com/auth/SplashScreen.web.tsx:175
-#~ msgid "Blog"
-#~ msgstr "ប្លុក"
 
 #: src/view/com/auth/server-input/index.tsx:136
 #: src/view/com/auth/server-input/index.tsx:137
@@ -1431,10 +1415,6 @@ msgstr ""
 msgid "Browse topic {displayName}"
 msgstr ""
 
-#: src/view/com/auth/SplashScreen.web.tsx:170
-#~ msgid "Business"
-#~ msgstr "អាជីវកម្ម"
-
 #: src/components/LabelingServiceCard/index.tsx:62
 #: src/components/moderation/ReportDialog/index.tsx:680
 #: src/screens/Search/components/StarterPackCard.tsx:106
@@ -1517,10 +1497,6 @@ msgstr "បោះបង់ការលុបគណនី"
 msgid "Cancel image crop"
 msgstr "បោះបង់ការច្រឹបរូបភាព"
 
-#: src/view/com/modals/EditProfile.tsx:264
-#~ msgid "Cancel profile editing"
-#~ msgstr "បោះបង់ការកែទម្រង់"
-
 #: src/components/PostControls/RepostButton.tsx:203
 msgid "Cancel quote post"
 msgstr "បោះបង់ការប្រកាសសម្រង់"
@@ -1532,10 +1508,6 @@ msgstr "បោះបង់ការបើកដំណើរការឡើងវ
 #: src/screens/Search/Shell.tsx:341
 msgid "Cancel search"
 msgstr "បោះបង់ការស្វែងរក"
-
-#: src/view/com/modals/LinkWarning.tsx:106
-#~ msgid "Cancels opening the linked website"
-#~ msgstr "បោះបង់ការបើកគេហទំព័រដែលបានភ្ជាប់"
 
 #: src/components/PostControls/index.tsx:101
 #: src/components/PostControls/index.tsx:132
@@ -1570,11 +1542,6 @@ msgstr "ផ្លាស់ប្តូររូបតំណាងកម្មវ
 msgid "Change app language"
 msgstr ""
 
-#: src/components/dialogs/VerifyEmailDialog.tsx:200
-#: src/components/dialogs/VerifyEmailDialog.tsx:225
-#~ msgid "Change email address"
-#~ msgstr "ផ្លាស់ប្តូរអាសយដ្ឋានអ៊ីមែល"
-
 #: src/screens/Settings/components/ChangeHandleDialog.tsx:94
 #: src/screens/Settings/components/ChangeHandleDialog.tsx:98
 msgid "Change Handle"
@@ -1596,14 +1563,6 @@ msgstr ""
 msgid "Change report reason"
 msgstr ""
 
-#: src/components/dialogs/ChangeEmailDialog.tsx:53
-#~ msgid "Change Your Email"
-#~ msgstr "ផ្លាស់ប្តូរអ៊ីមែលរបស់អ្នក"
-
-#: src/components/dialogs/VerifyEmailDialog.tsx:209
-#~ msgid "Change your email address"
-#~ msgstr "ផ្លាស់ប្តូរអាសយដ្ឋានអ៊ីមែលរបស់អ្នក"
-
 #: src/screens/Settings/AppIconSettings/index.tsx:216
 msgid "Changes app icon"
 msgstr ""
@@ -1614,7 +1573,7 @@ msgid "Changes hosting provider"
 msgstr ""
 
 #: src/lib/hooks/useNotificationHandler.ts:90
-#: src/Navigation.tsx:527
+#: src/Navigation.tsx:521
 #: src/view/shell/bottom-bar/BottomBar.tsx:221
 #: src/view/shell/desktop/LeftNav.tsx:553
 #: src/view/shell/Drawer.tsx:455
@@ -1640,7 +1599,7 @@ msgctxt "toast"
 msgid "Chat muted"
 msgstr "បានបិទការជជែក"
 
-#: src/Navigation.tsx:537
+#: src/Navigation.tsx:531
 #: src/screens/Messages/components/InboxPreview.tsx:24
 msgid "Chat request inbox"
 msgstr ""
@@ -1651,7 +1610,7 @@ msgid "Chat requests"
 msgstr ""
 
 #: src/components/dms/ConvoMenu.tsx:75
-#: src/Navigation.tsx:532
+#: src/Navigation.tsx:526
 #: src/screens/Messages/ChatList.tsx:341
 msgid "Chat settings"
 msgstr "ការកំណត់ការជជែក"
@@ -1675,7 +1634,7 @@ msgstr ""
 msgid "Check my status"
 msgstr "ពិនិត្យស្ថានភាពរបស់ខ្ញុំ"
 
-#: src/screens/Login/LoginForm.tsx:361
+#: src/screens/Login/LoginForm.tsx:407
 msgid "Check your email for a sign in code and enter it here."
 msgstr ""
 
@@ -1892,7 +1851,7 @@ msgstr "កំប្លែង"
 msgid "Comics"
 msgstr "រឿងកំប្លែង"
 
-#: src/Navigation.tsx:325
+#: src/Navigation.tsx:324
 #: src/view/screens/CommunityGuidelines.tsx:34
 msgid "Community Guidelines"
 msgstr "គោលការណ៍ណែនាំសហគមន៍"
@@ -1904,14 +1863,6 @@ msgstr "បញ្ចប់ការបើកដំណើរការ ហើយ�
 #: src/screens/Signup/index.tsx:162
 msgid "Complete the challenge"
 msgstr "បញ្ចប់ការប្រឈម"
-
-#: src/screens/OAuthCallback.tsx:101
-msgid "Completing sign in..."
-msgstr ""
-
-#: src/Navigation.tsx:345
-msgid "Completing Sign In..."
-msgstr ""
 
 #: src/view/shell/desktop/LeftNav.tsx:518
 msgid "Compose new post"
@@ -1961,17 +1912,13 @@ msgid "Confirm your birthdate"
 msgstr "បញ្ជាក់ថ្ងៃខែឆ្នាំកំណើតរបស់អ្នក។"
 
 #: src/components/dialogs/EmailDialog/components/TokenField.tsx:36
-#: src/screens/Login/LoginForm.tsx:334
+#: src/screens/Login/LoginForm.tsx:380
 #: src/screens/Settings/components/DisableEmail2FADialog.tsx:144
 #: src/screens/Settings/components/DisableEmail2FADialog.tsx:150
 #: src/view/com/modals/DeleteAccount.tsx:220
 #: src/view/com/modals/DeleteAccount.tsx:226
 msgid "Confirmation code"
 msgstr "លេខកូដបញ្ជាក់"
-
-#: src/components/dialogs/VerifyEmailDialog.tsx:248
-#~ msgid "Confirmation Code"
-#~ msgstr "លេខកូដបញ្ជាក់"
 
 #: src/screens/Settings/WalletSettings.tsx:153
 #: src/screens/Settings/WalletSettings.tsx:161
@@ -2003,7 +1950,7 @@ msgstr ""
 msgid "Connect Your Solana Wallet"
 msgstr ""
 
-#: src/screens/Login/LoginForm.tsx:409
+#: src/screens/Login/LoginForm.tsx:455
 msgid "Connecting..."
 msgstr "កំពុងភ្ជាប់..."
 
@@ -2026,7 +1973,7 @@ msgstr "ខ្លឹមសារ និងប្រព័ន្ធផ្សព�
 msgid "Content and media"
 msgstr "ខ្លឹមសារ និងប្រព័ន្ធផ្សព្វផ្សាយ"
 
-#: src/Navigation.tsx:486
+#: src/Navigation.tsx:480
 msgid "Content and Media"
 msgstr "ខ្លឹមសារ និងប្រព័ន្ធផ្សព្វផ្សាយ"
 
@@ -2136,10 +2083,6 @@ msgstr ""
 msgid "Copy"
 msgstr "ចម្លង"
 
-#: src/components/PostControls/ShareMenu/ShareMenuItems.tsx:186
-#~ msgid "Copy anyway"
-#~ msgstr ""
-
 #: src/screens/Settings/components/AddAppPasswordDialog.tsx:196
 msgid "Copy App Password"
 msgstr "ចម្លងពាក្យសម្ងាត់កម្មវិធី"
@@ -2221,7 +2164,7 @@ msgstr "ចម្លងកូដ QR"
 msgid "Copy TXT record value"
 msgstr "ចម្លងតម្លៃកំណត់ត្រា TXT"
 
-#: src/Navigation.tsx:330
+#: src/Navigation.tsx:329
 #: src/view/screens/CopyrightPolicy.tsx:31
 msgid "Copyright Policy"
 msgstr "គោលការណ៍រក្សាសិទ្ធិ"
@@ -2261,24 +2204,13 @@ msgstr "បង្កើតលេខកូដ QR សម្រាប់កញ្�
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:178
 #: src/components/StarterPack/ProfileStarterPacks.tsx:287
-#: src/Navigation.tsx:562
+#: src/Navigation.tsx:556
 msgid "Create a starter pack"
 msgstr "បង្កើតកញ្ចប់ចាប់ផ្តើម"
 
 #: src/components/StarterPack/ProfileStarterPacks.tsx:274
 msgid "Create a starter pack for me"
 msgstr "បង្កើតកញ្ចប់ចាប់ផ្តើមសម្រាប់ខ្ញុំ"
-
-#: src/view/com/auth/SplashScreen.tsx:55
-#: src/view/com/auth/SplashScreen.web.tsx:117
-#: src/view/shell/bottom-bar/BottomBar.tsx:345
-#: src/view/shell/bottom-bar/BottomBar.tsx:350
-#: src/view/shell/bottom-bar/BottomBarWeb.tsx:206
-#: src/view/shell/bottom-bar/BottomBarWeb.tsx:211
-#: src/view/shell/NavSignupCard.tsx:47
-#: src/view/shell/NavSignupCard.tsx:52
-msgid "Create account"
-msgstr "ចុះឈ្មោះ"
 
 #: src/screens/Signup/index.tsx:108
 msgid "Create Account"
@@ -2301,11 +2233,6 @@ msgstr "បង្កើតរូបតំណាងជំនួសវិញ"
 #: src/components/StarterPack/ProfileStarterPacks.tsx:185
 msgid "Create another"
 msgstr "បង្កើតមួយផ្សេងទៀត"
-
-#: src/view/com/auth/SplashScreen.tsx:47
-#: src/view/com/auth/SplashScreen.web.tsx:109
-msgid "Create new account"
-msgstr "បង្កើតគណនីថ្មី"
 
 #: src/components/moderation/ReportDialog/index.tsx:582
 #: src/components/ReportDialog/SelectReportOptionView.tsx:99
@@ -2650,10 +2577,6 @@ msgstr "បង្ហាញផ្លាកសញ្ញាអក្សរជំន
 msgid "Display name"
 msgstr "បង្ហាញឈ្មោះ"
 
-#: src/view/com/modals/EditProfile.tsx:182
-#~ msgid "Display Name"
-#~ msgstr "បង្ហាញឈ្មោះ"
-
 #: src/screens/Profile/Header/EditProfileDialog.tsx:339
 msgid "Display name is too long"
 msgstr "ឈ្មោះបង្ហាញវែងពេក"
@@ -2763,17 +2686,9 @@ msgstr ""
 msgid "e.g. Alice Lastname"
 msgstr ""
 
-#: src/view/com/modals/EditProfile.tsx:187
-#~ msgid "e.g. Alice Roberts"
-#~ msgstr ""
-
 #: src/screens/Settings/components/ChangeHandleDialog.tsx:376
 msgid "e.g. alice.com"
 msgstr ""
-
-#: src/view/com/modals/EditProfile.tsx:223
-#~ msgid "e.g. Artist, dog-lover, and avid reader."
-#~ msgstr ""
 
 #: src/lib/moderation/useGlobalLabelStrings.ts:43
 msgid "E.g. artistic nudes."
@@ -2850,14 +2765,10 @@ msgstr ""
 msgid "Edit Moderation List"
 msgstr "កែសម្រួលបញ្ជីសម្របសម្រួល"
 
-#: src/Navigation.tsx:350
+#: src/Navigation.tsx:344
 #: src/view/screens/Feeds.tsx:518
 msgid "Edit My Feeds"
 msgstr "កែសម្រួលមតិព័ត៌មានរបស់ខ្ញុំ"
-
-#: src/view/com/modals/EditProfile.tsx:154
-#~ msgid "Edit my profile"
-#~ msgstr "កែប្រវត្តិរូបរបស់ខ្ញុំ"
 
 #: src/components/StarterPack/Wizard/WizardEditListDialog.tsx:109
 msgid "Edit People"
@@ -2892,15 +2803,7 @@ msgstr "កែសម្រួលបញ្ជីអ្នកប្រើប្រ
 msgid "Edit who can reply"
 msgstr "កែសម្រួលអ្នកណាអាចឆ្លើយតបបាន"
 
-#: src/view/com/modals/EditProfile.tsx:195
-#~ msgid "Edit your display name"
-#~ msgstr "កែសម្រួលឈ្មោះបង្ហាញរបស់អ្នក"
-
-#: src/view/com/modals/EditProfile.tsx:231
-#~ msgid "Edit your profile description"
-#~ msgstr "កែសម្រួល​ការ​ពិពណ៌នា​ប្រវត្តិរូប​របស់​អ្នក"
-
-#: src/Navigation.tsx:567
+#: src/Navigation.tsx:561
 msgid "Edit your starter pack"
 msgstr "កែសម្រួលកញ្ចប់ចាប់ផ្តើមរបស់អ្នក"
 
@@ -2938,10 +2841,6 @@ msgstr "ផ្ញើអ៊ីមែលឡើងវិញ"
 #: src/components/dialogs/EmailDialog/screens/Verify.tsx:208
 msgid "Email sent!"
 msgstr ""
-
-#: src/components/dialogs/ChangeEmailDialog.tsx:63
-#~ msgid "Email Updated!"
-#~ msgstr ""
 
 #: src/components/dialogs/EmailDialog/screens/Verify.tsx:182
 msgid "Email verification complete!"
@@ -2997,11 +2896,6 @@ msgstr "បើកប្រព័ន្ធផ្សព្វផ្សាយខា
 msgid "Enable media players for"
 msgstr "បើកកម្មវិធីចាក់មេឌៀសម្រាប់"
 
-#: src/screens/Settings/NotificationSettings.tsx:74
-#: src/screens/Settings/NotificationSettings.tsx:77
-#~ msgid "Enable priority notifications"
-#~ msgstr "បើកការជូនដំណឹងជាអាទិភាព"
-
 #: src/screens/Settings/NotificationSettings/index.tsx:102
 #: src/screens/Settings/NotificationSettings/index.tsx:106
 msgid "Enable push notifications"
@@ -3056,10 +2950,6 @@ msgstr "បញ្ចូលពាក្យ ឬស្លាក"
 msgid "Enter code"
 msgstr ""
 
-#: src/components/dialogs/VerifyEmailDialog.tsx:118
-#~ msgid "Enter Code"
-#~ msgstr "បញ្ចូលលេខកូដ"
-
 #: src/components/Post/Embed/VideoEmbed/VideoEmbedInner/web-controls/VideoControls.tsx:405
 msgid "Enter fullscreen"
 msgstr "បញ្ចូលអេក្រង់ពេញ"
@@ -3076,7 +2966,7 @@ msgstr "បញ្ចូល Domain ដែលអ្នកចង់ប្រើ"
 msgid "Enter the email you used to create your account. We'll send you a \"reset code\" so you can set a new password."
 msgstr "បញ្ចូលអ៊ីមែលដែលអ្នកធ្លាប់បង្កើតគណនីរបស់អ្នក។ យើងនឹងផ្ញើ \"កំណត់លេខកូដឡើងវិញ\" ដល់អ្នក ដូច្នេះអ្នកអាចកំណត់ពាក្យសម្ងាត់ថ្មី"
 
-#: src/screens/Login/LoginForm.tsx:274
+#: src/screens/Login/LoginForm.tsx:320
 msgid "Enter the username or email address you used when you created your account"
 msgstr ""
 
@@ -3088,11 +2978,11 @@ msgstr "បញ្ចូលថ្ងៃខែឆ្នាំកំណើតរប
 msgid "Enter your Bluesky username or handle"
 msgstr ""
 
-#: src/screens/Login/LoginForm.tsx:273
+#: src/screens/Login/LoginForm.tsx:319
 msgid "Enter your Bluesky username or handle (e.g. alice.bsky.social)"
 msgstr ""
 
-#: src/screens/Login/LoginForm.tsx:372
+#: src/screens/Login/LoginForm.tsx:418
 msgid "Enter your Bluesky username or handle. You'll be securely redirected to bsky.social to complete sign in."
 msgstr ""
 
@@ -3101,11 +2991,7 @@ msgstr ""
 msgid "Enter your email address"
 msgstr "បញ្ចូលអាសយដ្ឋានអ៊ីមែលរបស់អ្នក"
 
-#: src/components/dialogs/ChangeEmailDialog.tsx:138
-#~ msgid "Enter your new email address below."
-#~ msgstr "បញ្ចូលអាសយដ្ឋានអ៊ីមែលថ្មីរបស់អ្នកខាងក្រោម"
-
-#: src/screens/Login/LoginForm.tsx:301
+#: src/screens/Login/LoginForm.tsx:347
 msgid "Enter your password"
 msgstr ""
 
@@ -3259,7 +3145,7 @@ msgstr "ប្រព័ន្ធផ្សព្វផ្សាយច្បាស
 msgid "Explicit sexual images."
 msgstr "រូបភាពផ្លូវភេទច្បាស់លាស់"
 
-#: src/Navigation.tsx:724
+#: src/Navigation.tsx:718
 #: src/screens/Search/Shell.tsx:307
 #: src/view/shell/desktop/LeftNav.tsx:635
 #: src/view/shell/Drawer.tsx:403
@@ -3290,7 +3176,7 @@ msgstr "ប្រព័ន្ធផ្សព្វផ្សាយខាងក្
 msgid "External media may allow websites to collect information about you and your device. No information is sent or requested until you press the \"play\" button."
 msgstr "ប្រព័ន្ធផ្សព្វផ្សាយខាងក្រៅអាចអនុញ្ញាតឱ្យគេហទំព័រប្រមូលព័ត៌មានអំពីអ្នក និងឧបករណ៍របស់អ្នក។ គ្មាន​ព័ត៌មាន​ត្រូវ​បាន​ផ្ញើ ឬ​ស្នើ​រហូត​ដល់​អ្នក​ចុច​ប៊ូតុង \"play\""
 
-#: src/Navigation.tsx:369
+#: src/Navigation.tsx:363
 #: src/screens/Settings/ExternalMediaPreferences.tsx:31
 msgid "External Media Preferences"
 msgstr "ចំណូលចិត្តប្រព័ន្ធផ្សព្វផ្សាយខាងក្រៅ"
@@ -3418,10 +3304,6 @@ msgstr ""
 msgid "Failed to save image: {0}"
 msgstr ""
 
-#: src/state/queries/notifications/settings.ts:39
-#~ msgid "Failed to save notification preferences, please try again"
-#~ msgstr "បរាជ័យក្នុងការរក្សាទុកចំណូលចិត្តការជូនដំណឹង សូមព្យាយាមម្តងទៀត"
-
 #: src/screens/ModerationInteractionSettings/index.tsx:108
 msgid "Failed to save settings. Please try again."
 msgstr ""
@@ -3481,7 +3363,7 @@ msgstr ""
 msgid "Failed to verify handle. Please try again."
 msgstr "បរាជ័យក្នុងការផ្ទៀងផ្ទាត់ចំណុចទាញ។ សូមព្យាយាមម្តងទៀត"
 
-#: src/Navigation.tsx:275
+#: src/Navigation.tsx:274
 msgid "Feed"
 msgstr "ព័ត៌មាន"
 
@@ -3508,7 +3390,7 @@ msgctxt "toast"
 msgid "Feedback sent!"
 msgstr "បានផ្ញើមតិកែលម្អ!"
 
-#: src/Navigation.tsx:547
+#: src/Navigation.tsx:541
 #: src/screens/Search/SearchResults.tsx:68
 #: src/screens/StarterPack/StarterPackScreen.tsx:190
 #: src/view/screens/Feeds.tsx:511
@@ -3673,7 +3555,7 @@ msgstr "តាមដោយ <0>{0}</0> និង <1>{1}</1>"
 msgid "Followed by <0>{0}</0>, <1>{1}</1>, and {2, plural, one {# other} other {# others}}"
 msgstr ""
 
-#: src/Navigation.tsx:229
+#: src/Navigation.tsx:228
 msgid "Followers of @{0} that you know"
 msgstr "អ្នកតាមដាន @{0} ដែលអ្នកស្គាល់"
 
@@ -3708,7 +3590,7 @@ msgstr ""
 msgid "Following feed preferences"
 msgstr "ធ្វើតាមចំណូលចិត្តមតិព័ត៌មាន"
 
-#: src/Navigation.tsx:356
+#: src/Navigation.tsx:350
 #: src/screens/Settings/FollowingFeedPreferences.tsx:53
 msgid "Following Feed Preferences"
 msgstr "ធ្វើតាមចំណូលចិត្តមតិព័ត៌មាន"
@@ -3759,11 +3641,11 @@ msgstr "ជារៀងរហូត"
 msgid "Forgot Password"
 msgstr ""
 
-#: src/screens/Login/LoginForm.tsx:306
+#: src/screens/Login/LoginForm.tsx:352
 msgid "Forgot password?"
 msgstr "ភ្លេចពាក្យសម្ងា?ត់"
 
-#: src/screens/Login/LoginForm.tsx:317
+#: src/screens/Login/LoginForm.tsx:363
 msgid "Forgot?"
 msgstr "ភ្លេច?"
 
@@ -3953,7 +3835,7 @@ msgstr "ពាក់កណ្តាលផ្លូវ"
 msgid "Handle"
 msgstr ""
 
-#: src/screens/Login/LoginForm.tsx:170
+#: src/screens/Login/LoginForm.tsx:210
 msgid "Handle \"{handle}\" not found. Please check your username or handle and try again."
 msgstr ""
 
@@ -3979,7 +3861,7 @@ msgstr ""
 msgid "Harassment, trolling, or intolerance"
 msgstr "ការបៀតបៀន ការបោកប្រាស់ ឬការមិនអត់ឱន"
 
-#: src/Navigation.tsx:517
+#: src/Navigation.tsx:511
 msgid "Hashtag"
 msgstr ""
 
@@ -4134,8 +4016,8 @@ msgstr "ហ៊ឺ យើងមិនអាចផ្ទុកសេវាកម�
 msgid "Hold up! We’re gradually giving access to video, and you’re still waiting in line. Check back soon!"
 msgstr "ចាំ! យើងកំពុងផ្តល់សិទ្ធិចូលប្រើវីដេអូបន្តិចម្តងៗ ហើយអ្នកនៅតែរង់ចាំក្នុងជួរ។ សូមពិនិត្យមើលឡើងវិញឆាប់ៗនេះ"
 
-#: src/Navigation.tsx:719
-#: src/Navigation.tsx:739
+#: src/Navigation.tsx:713
+#: src/Navigation.tsx:733
 #: src/view/shell/bottom-bar/BottomBar.tsx:178
 #: src/view/shell/desktop/LeftNav.tsx:617
 #: src/view/shell/Drawer.tsx:429
@@ -4147,7 +4029,7 @@ msgid "Host:"
 msgstr ""
 
 #: src/screens/Login/ForgotPasswordForm.tsx:83
-#: src/screens/Login/LoginForm.tsx:229
+#: src/screens/Login/LoginForm.tsx:275
 msgid "Hosting provider"
 msgstr ""
 
@@ -4296,7 +4178,7 @@ msgstr "សារមិនសមរម្យ ឬតំណច្បាស់ល�
 msgid "Inbox zero!"
 msgstr ""
 
-#: src/screens/Login/LoginForm.tsx:206
+#: src/screens/Login/LoginForm.tsx:252
 msgid "Incorrect username or password"
 msgstr "ឈ្មោះអ្នកប្រើ ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ"
 
@@ -4316,7 +4198,7 @@ msgstr "បញ្ចូលពាក្យសម្ងាត់ថ្មី"
 msgid "Input password for account deletion"
 msgstr "បញ្ចូលពាក្យសម្ងាត់សម្រាប់ការលុបគណនី"
 
-#: src/screens/Login/LoginForm.tsx:349
+#: src/screens/Login/LoginForm.tsx:395
 msgid "Input the code which has been emailed to you"
 msgstr "បញ្ចូលលេខកូដដែលបានផ្ញើទៅអ្នក"
 
@@ -4328,10 +4210,14 @@ msgstr "អន្តរកម្មមានកំណត់"
 msgid "Interaction settings"
 msgstr ""
 
-#: src/screens/Login/LoginForm.tsx:198
+#: src/screens/Login/LoginForm.tsx:244
 #: src/screens/Settings/components/DisableEmail2FADialog.tsx:70
 msgid "Invalid 2FA confirmation code."
 msgstr "លេខកូដបញ្ជាក់ 2FA មិនត្រឹមត្រូវ"
+
+#: src/screens/Login/LoginForm.tsx:134
+msgid "Invalid handle. Please check your username and try again."
+msgstr ""
 
 #: src/screens/Settings/components/ChangeHandleDialog.tsx:597
 msgid "Invalid handle. Please try a different one."
@@ -4393,11 +4279,6 @@ msgstr "មានតែអ្នកទេឥឡូវនេះ! បន្ថែ�
 msgid "Job ID: {0}"
 msgstr ""
 
-#. Link to a page with job openings at Bluesky
-#: src/view/com/auth/SplashScreen.web.tsx:180
-#~ msgid "Jobs"
-#~ msgstr "ការងារ"
-
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:205
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:211
 #: src/screens/StarterPack/StarterPackScreen.tsx:466
@@ -4448,7 +4329,7 @@ msgstr "ស្លាកនៅលើមាតិការបស់អ្នក"
 msgid "Language selection"
 msgstr "ការជ្រើសរើសភាសា"
 
-#: src/Navigation.tsx:202
+#: src/Navigation.tsx:201
 msgid "Language Settings"
 msgstr "ការកំណត់ភាសា"
 
@@ -4483,10 +4364,6 @@ msgstr ""
 #: src/components/moderation/ScreenHider.tsx:140
 msgid "Learn More"
 msgstr "ស្វែងយល់បន្ថែម"
-
-#: src/view/com/auth/SplashScreen.web.tsx:168
-#~ msgid "Learn more about Bluesky"
-#~ msgstr "មើល​បន្ថែមទៀត​អំពី Bluesky នៅលើ Facebook"
 
 #: src/view/com/auth/server-input/index.tsx:218
 msgid "Learn more about self hosting your PDS."
@@ -4545,10 +4422,6 @@ msgstr "ចាកចេញពីការសន្ទនា"
 msgid "Leave them all unchecked to see any language."
 msgstr "ទុកពួកវាទាំងអស់ដោយមិនធីក ដើម្បីមើលភាសាណាមួយ"
 
-#: src/view/com/modals/LinkWarning.tsx:65
-#~ msgid "Leaving Bluesky"
-#~ msgstr "ចាកចេញពី Bluesky"
-
 #: src/components/dialogs/LinkWarning.tsx:67
 #: src/components/dialogs/LinkWarning.tsx:75
 msgid "Leaving Skyfi"
@@ -4600,7 +4473,7 @@ msgstr "ចូលចិត្ត 10 ប្រកាស"
 msgid "Like 10 posts to train the Discover feed"
 msgstr "ចូលចិត្តការបង្ហោះចំនួន 10 ដើម្បីបណ្តុះបណ្តាល Discover feed"
 
-#: src/Navigation.tsx:438
+#: src/Navigation.tsx:432
 msgid "Like notifications"
 msgstr ""
 
@@ -4612,8 +4485,8 @@ msgstr "ចូលចិត្តមតិព័ត៌មាននេះ"
 msgid "Like this labeler"
 msgstr ""
 
-#: src/Navigation.tsx:280
-#: src/Navigation.tsx:285
+#: src/Navigation.tsx:279
+#: src/Navigation.tsx:284
 msgid "Liked by"
 msgstr "ចូលចិត្ត"
 
@@ -4648,7 +4521,7 @@ msgstr "ចូលចិត្ត"
 msgid "Likes of your reposts"
 msgstr ""
 
-#: src/Navigation.tsx:462
+#: src/Navigation.tsx:456
 msgid "Likes of your reposts notifications"
 msgstr ""
 
@@ -4664,7 +4537,7 @@ msgstr "ចូលចិត្តនៅលើប្រកាសនេះ"
 msgid "Linear"
 msgstr ""
 
-#: src/Navigation.tsx:235
+#: src/Navigation.tsx:234
 msgid "List"
 msgstr "បញ្ជី"
 
@@ -4722,7 +4595,7 @@ msgctxt "toast"
 msgid "List unmuted"
 msgstr "បាន​បិទ​បញ្ជី"
 
-#: src/Navigation.tsx:156
+#: src/Navigation.tsx:155
 #: src/view/screens/Lists.tsx:65
 #: src/view/screens/Profile.tsx:224
 #: src/view/screens/Profile.tsx:232
@@ -4775,7 +4648,7 @@ msgstr "ផ្ទុកប្រកាសថ្មីៗ"
 msgid "Loading..."
 msgstr "កំពុងផ្ទុក..."
 
-#: src/Navigation.tsx:305
+#: src/Navigation.tsx:304
 msgid "Log"
 msgstr "កំណត់ហេតុ"
 
@@ -4876,7 +4749,7 @@ msgstr "ប្រព័ន្ធផ្សព្វផ្សាយ"
 msgid "Media that may be disturbing or inappropriate for some audiences."
 msgstr "ប្រព័ន្ធផ្សព្វផ្សាយដែលអាចរំខាន ឬមិនសមរម្យសម្រាប់ទស្សនិកជនមួយចំនួន"
 
-#: src/Navigation.tsx:422
+#: src/Navigation.tsx:416
 msgid "Mention notifications"
 msgstr ""
 
@@ -4933,7 +4806,7 @@ msgstr "សារវែងពេក"
 msgid "Message options"
 msgstr ""
 
-#: src/Navigation.tsx:734
+#: src/Navigation.tsx:728
 msgid "Messages"
 msgstr "សារ"
 
@@ -4942,7 +4815,7 @@ msgctxt "Name of app icon variant"
 msgid "Midnight"
 msgstr ""
 
-#: src/Navigation.tsx:478
+#: src/Navigation.tsx:472
 msgid "Miscellaneous notifications"
 msgstr ""
 
@@ -4956,7 +4829,7 @@ msgstr "គណនីបន្លំ"
 msgid "Misleading Post"
 msgstr "post បន្លំ"
 
-#: src/Navigation.tsx:161
+#: src/Navigation.tsx:160
 #: src/screens/Moderation/index.tsx:93
 #: src/screens/Settings/Settings.tsx:180
 #: src/screens/Settings/Settings.tsx:183
@@ -4995,7 +4868,7 @@ msgstr "បានធ្វើបច្ចុប្បន្នភាពបញ្
 msgid "Moderation lists"
 msgstr "បញ្ជីសម្របសម្រួល"
 
-#: src/Navigation.tsx:166
+#: src/Navigation.tsx:165
 #: src/view/screens/ModerationModlists.tsx:65
 msgid "Moderation Lists"
 msgstr "បញ្ជីការសម្របសម្រួល"
@@ -5004,7 +4877,7 @@ msgstr "បញ្ជីការសម្របសម្រួល"
 msgid "moderation settings"
 msgstr "ការកំណត់កម្រិតមធ្យម"
 
-#: src/Navigation.tsx:295
+#: src/Navigation.tsx:294
 msgid "Moderation states"
 msgstr ""
 
@@ -5127,7 +5000,7 @@ msgstr "បិទពាក្យ & ស្លាក"
 msgid "Muted accounts"
 msgstr "គណនីបិទ"
 
-#: src/Navigation.tsx:171
+#: src/Navigation.tsx:170
 #: src/view/screens/ModerationMutedAccounts.tsx:118
 msgid "Muted Accounts"
 msgstr "គណនីបិទ"
@@ -5191,7 +5064,7 @@ msgid "Navigate to starter pack"
 msgstr ""
 
 #: src/screens/Login/ForgotPasswordForm.tsx:166
-#: src/screens/Login/LoginForm.tsx:419
+#: src/screens/Login/LoginForm.tsx:465
 #: src/view/com/modals/ChangePassword.tsx:180
 msgid "Navigates to the next screen"
 msgstr "រុករកទៅអេក្រង់បន្ទាប់"
@@ -5200,18 +5073,10 @@ msgstr "រុករកទៅអេក្រង់បន្ទាប់"
 msgid "Navigates to your profile"
 msgstr "រុករកទៅកម្រងព័ត៌មានរបស់អ្នក"
 
-#: src/components/dialogs/VerifyEmailDialog.tsx:234
-#~ msgid "Need to change it?"
-#~ msgstr "ត្រូវ​ការ​ផ្លាស់​ប្តូ​រ​វា​?"
-
 #: src/components/moderation/ReportDialog/index.tsx:288
 #: src/components/ReportDialog/SelectReportOptionView.tsx:128
 msgid "Need to report a copyright violation?"
 msgstr "ត្រូវការរាយការណ៍អំពីការរំលោភសិទ្ធិអ្នកនិពន្ធ?"
-
-#: src/screens/Login/LoginForm.tsx:180
-msgid "Network error: Unable to connect to authentication server. Please try again."
-msgstr ""
 
 #: src/screens/Onboarding/StepFinished.tsx:282
 msgid "Never lose access to your followers or data."
@@ -5245,7 +5110,7 @@ msgstr ""
 msgid "New Feature"
 msgstr ""
 
-#: src/Navigation.tsx:454
+#: src/Navigation.tsx:448
 msgid "New follower notifications"
 msgstr ""
 
@@ -5329,8 +5194,8 @@ msgstr "ព័ត៌មាន"
 
 #: src/screens/Login/ForgotPasswordForm.tsx:137
 #: src/screens/Login/ForgotPasswordForm.tsx:143
-#: src/screens/Login/LoginForm.tsx:415
-#: src/screens/Login/LoginForm.tsx:429
+#: src/screens/Login/LoginForm.tsx:461
+#: src/screens/Login/LoginForm.tsx:475
 #: src/screens/Login/SetNewPasswordForm.tsx:182
 #: src/screens/Login/SetNewPasswordForm.tsx:188
 #: src/screens/Settings/components/AddAppPasswordDialog.tsx:157
@@ -5491,7 +5356,7 @@ msgstr ""
 msgid "Not followed by anyone you're following"
 msgstr ""
 
-#: src/Navigation.tsx:151
+#: src/Navigation.tsx:150
 #: src/view/screens/Profile.tsx:125
 msgid "Not Found"
 msgstr "រកមិនឃើញ"
@@ -5512,19 +5377,11 @@ msgstr ""
 msgid "Nothing here"
 msgstr "គ្មានអ្វីនៅទីនេះទេ"
 
-#: src/screens/Settings/NotificationSettings.tsx:64
-#~ msgid "Notification filters"
-#~ msgstr "តម្រងការជូនដំណឹង"
-
-#: src/Navigation.tsx:408
-#: src/Navigation.tsx:542
+#: src/Navigation.tsx:402
+#: src/Navigation.tsx:536
 #: src/view/screens/Notifications.tsx:136
 msgid "Notification settings"
 msgstr "ការកំណត់ការជូនដំណឹង"
-
-#: src/screens/Settings/NotificationSettings.tsx:46
-#~ msgid "Notification Settings"
-#~ msgstr "ការកំណត់ការជូនដំណឹង"
 
 #: src/screens/Messages/Settings.tsx:123
 msgid "Notification sounds"
@@ -5534,7 +5391,7 @@ msgstr "សំឡេងជូនដំណឹង"
 msgid "Notification Sounds"
 msgstr "សំឡេងជូនដំណឹង"
 
-#: src/Navigation.tsx:729
+#: src/Navigation.tsx:723
 #: src/screens/Settings/NotificationSettings/index.tsx:92
 #: src/screens/Settings/NotificationSettings/LikeNotificationSettings.tsx:30
 #: src/screens/Settings/NotificationSettings/LikesOnRepostsNotificationSettings.tsx:30
@@ -5576,11 +5433,12 @@ msgstr "អាក្រាតកាយ"
 msgid "Nudity or adult content not labeled as such"
 msgstr "អាក្រាតកាយ ឬខ្លឹមសារសម្រាប់មនុស្សពេញវ័យមិនត្រូវបានដាក់ស្លាកបែបនេះទេ"
 
-#: src/screens/Login/LoginForm.tsx:182
+#: src/screens/Login/LoginForm.tsx:137
+#: src/screens/Login/LoginForm.tsx:228
 msgid "OAuth login failed. Please try again."
 msgstr ""
 
-#: src/screens/Login/LoginForm.tsx:163
+#: src/screens/Login/LoginForm.tsx:202
 msgid "OAuth requires HTTPS. Using development server."
 msgstr ""
 
@@ -5802,11 +5660,6 @@ msgstr "បើកវិចិត្រសាលរូបភាពឧបករណ
 msgid "Opens emoji picker"
 msgstr ""
 
-#: src/view/com/auth/SplashScreen.tsx:49
-#: src/view/com/auth/SplashScreen.web.tsx:111
-msgid "Opens flow to create a new Bluesky account"
-msgstr "បើកលំហូរដើម្បីបង្កើតគណនី Bluesky ថ្មី"
-
 #: src/view/com/auth/SplashScreen.tsx:63
 #: src/view/com/auth/SplashScreen.web.tsx:125
 msgid "Opens flow to sign in to your existing Bluesky account"
@@ -5832,13 +5685,9 @@ msgstr "បើកបញ្ជីលេខកូដអញ្ជើញ"
 msgid "Opens live status dialog"
 msgstr ""
 
-#: src/screens/Login/LoginForm.tsx:307
+#: src/screens/Login/LoginForm.tsx:353
 msgid "Opens password reset form"
 msgstr "បើកទម្រង់កំណត់ពាក្យសម្ងាត់ឡើងវិញ"
-
-#: src/view/com/modals/LinkWarning.tsx:93
-#~ msgid "Opens the linked website"
-#~ msgstr "បើកគេហទំព័រដែលបានភ្ជាប់"
 
 #: src/view/com/notifications/NotificationFeedItem.tsx:850
 #: src/view/com/util/UserAvatar.tsx:581
@@ -5917,7 +5766,7 @@ msgstr "រកមិនឃើញទំព័រ"
 msgid "Page Not Found"
 msgstr "រកមិនឃើញទំព័រ"
 
-#: src/screens/Login/LoginForm.tsx:286
+#: src/screens/Login/LoginForm.tsx:332
 #: src/screens/Settings/AccountSettings.tsx:128
 #: src/screens/Settings/AccountSettings.tsx:132
 #: src/screens/Signup/StepInfo/index.tsx:228
@@ -5958,11 +5807,11 @@ msgstr "ផ្អាក video"
 msgid "People"
 msgstr "មនុស្ស"
 
-#: src/Navigation.tsx:222
+#: src/Navigation.tsx:221
 msgid "People followed by @{0}"
 msgstr "មនុស្ស​តាម​ដោយ @{0}"
 
-#: src/Navigation.tsx:215
+#: src/Navigation.tsx:214
 msgid "People following @{0}"
 msgstr "មនុស្ស​តាម @{0}"
 
@@ -6138,7 +5987,7 @@ msgstr "សូមបញ្ចូលលេខកូដអញ្ជើញរបស
 msgid "Please enter your new email address."
 msgstr ""
 
-#: src/screens/Login/LoginForm.tsx:113
+#: src/screens/Login/LoginForm.tsx:147
 msgid "Please enter your password"
 msgstr ""
 
@@ -6183,14 +6032,6 @@ msgstr ""
 msgid "Please verify your email"
 msgstr ""
 
-#: src/components/dialogs/VerifyEmailDialog.tsx:108
-#~ msgid "Please Verify Your Email"
-#~ msgstr "សូមផ្ទៀងផ្ទាត់អ៊ីមែលរបស់អ្នក"
-
-#: src/screens/OAuthCallback.tsx:104
-msgid "Please wait while we complete your OAuth sign in with bsky.social"
-msgstr ""
-
 #: src/screens/Onboarding/index.tsx:34
 #: src/screens/Onboarding/state.ts:111
 #: src/screens/Search/modules/ExploreTrendingTopics.tsx:235
@@ -6201,14 +6042,14 @@ msgstr "នយោបាយ"
 msgid "Porn"
 msgstr ""
 
-#: src/view/com/composer/Composer.tsx:1031
-msgctxt "action"
-msgid "Post"
-msgstr "ការបង្ហោះ"
-
 #: src/screens/PostThread/index.tsx:495
 #: src/view/com/post-thread/PostThread.tsx:561
 msgctxt "description"
+msgid "Post"
+msgstr "ការបង្ហោះ"
+
+#: src/view/com/composer/Composer.tsx:1031
+msgctxt "action"
 msgid "Post"
 msgstr "ការបង្ហោះ"
 
@@ -6225,10 +6066,10 @@ msgstr ""
 msgid "Post by {0}"
 msgstr "Post ដោយ {0}"
 
-#: src/Navigation.tsx:248
-#: src/Navigation.tsx:255
-#: src/Navigation.tsx:262
-#: src/Navigation.tsx:269
+#: src/Navigation.tsx:247
+#: src/Navigation.tsx:254
+#: src/Navigation.tsx:261
+#: src/Navigation.tsx:268
 msgid "Post by @{0}"
 msgstr ""
 
@@ -6266,7 +6107,7 @@ msgstr ""
 msgid "Post interaction settings"
 msgstr "ការ​កំណត់​អន្តរកម្ម​ post"
 
-#: src/Navigation.tsx:182
+#: src/Navigation.tsx:181
 #: src/screens/ModerationInteractionSettings/index.tsx:34
 msgid "Post Interaction Settings"
 msgstr ""
@@ -6314,18 +6155,9 @@ msgstr ""
 msgid "Potentially misleading link"
 msgstr ""
 
-#: src/view/com/modals/LinkWarning.tsx:60
-#~ msgid "Potentially Misleading Link"
-#~ msgstr "តំណភ្ជាប់ដែលអាចយល់ច្រឡំ"
-
 #: src/components/dialogs/LinkWarning.tsx:66
 msgid "Potentially misleading link warning"
 msgstr ""
-
-#: src/state/queries/notifications/settings.ts:44
-#~ msgctxt "toast"
-#~ msgid "Preference saved"
-#~ msgstr "បានរក្សាទុកចំណូលចិត្ត"
 
 #: src/screens/Messages/components/MessageListError.tsx:19
 msgid "Press to attempt reconnection"
@@ -6357,10 +6189,6 @@ msgstr "ភាសាចម្បង"
 msgid "Prioritize your Follows"
 msgstr "ផ្តល់អាទិភាពដល់ការតាមដានរបស់អ្នក"
 
-#: src/screens/Settings/NotificationSettings.tsx:67
-#~ msgid "Priority notifications"
-#~ msgstr "ការជូនដំណឹងជាអាទិភាព"
-
 #: src/view/shell/desktop/RightNav.tsx:110
 #: src/view/shell/desktop/RightNav.tsx:111
 msgid "Privacy"
@@ -6371,12 +6199,12 @@ msgstr "ឯកជនភាព"
 msgid "Privacy and security"
 msgstr "ភាពឯកជន និងសុវត្ថិភាព"
 
-#: src/Navigation.tsx:401
+#: src/Navigation.tsx:395
 #: src/screens/Settings/PrivacyAndSecuritySettings.tsx:39
 msgid "Privacy and Security"
 msgstr "ភាពឯកជន និងសុវត្ថិភាព"
 
-#: src/Navigation.tsx:315
+#: src/Navigation.tsx:314
 #: src/screens/Settings/AboutSettings.tsx:98
 #: src/screens/Settings/AboutSettings.tsx:101
 #: src/view/screens/PrivacyPolicy.tsx:31
@@ -6471,7 +6299,7 @@ msgstr "កូដ QR ត្រូវបានទាញយកហើយ"
 msgid "QR code saved to your camera roll!"
 msgstr "លេខកូដ QR ត្រូវបានរក្សាទុកទៅក្នុងក្រឡុកកាមេរ៉ារបស់អ្នក"
 
-#: src/Navigation.tsx:430
+#: src/Navigation.tsx:424
 msgid "Quote notifications"
 msgstr ""
 
@@ -6557,10 +6385,6 @@ msgstr ""
 #: src/screens/PostThread/components/ThreadItemReadMore.tsx:71
 msgid "Read more replies"
 msgstr ""
-
-#: src/view/com/auth/SplashScreen.web.tsx:173
-#~ msgid "Read the Bluesky blog"
-#~ msgstr "អានប្លក់ Bluesky"
 
 #: src/screens/Signup/StepInfo/Policies.tsx:58
 #: src/screens/Signup/StepInfo/Policies.tsx:84
@@ -6708,10 +6532,6 @@ msgstr "លុប​ពាក្យ​ស្ងាត់​ចេញ​ពី​
 msgid "Remove profile"
 msgstr "លុបកម្រងព័ត៌មាន"
 
-#: src/view/com/util/post-embeds/QuoteEmbed.tsx:290
-#~ msgid "Remove quote"
-#~ msgstr "លុប quote"
-
 #: src/components/PostControls/RepostButton.tsx:151
 #: src/components/PostControls/RepostButton.tsx:161
 msgid "Remove repost"
@@ -6771,10 +6591,6 @@ msgstr "បានលុបចេញពីមតិព័ត៌មានរបស
 msgid "Removed verification"
 msgstr ""
 
-#: src/view/com/util/post-embeds/QuoteEmbed.tsx:291
-#~ msgid "Removes quoted post"
-#~ msgstr "លុប quoted post"
-
 #: src/view/com/posts/FeedShutdownMsg.tsx:129
 #: src/view/com/posts/FeedShutdownMsg.tsx:133
 msgid "Replace with Discover"
@@ -6815,7 +6631,7 @@ msgstr "ឆ្លើយតបដែលលាក់ដោយ Thread Author"
 msgid "Reply Hidden by You"
 msgstr "ឆ្លើយតបដែលលាក់ដោយអ្នក"
 
-#: src/Navigation.tsx:414
+#: src/Navigation.tsx:408
 msgid "Reply notifications"
 msgstr ""
 
@@ -6967,7 +6783,7 @@ msgstr "បង្ហោះឡើងវិញ"
 msgid "Repost ({0, plural, one {# repost} other {# reposts}})"
 msgstr ""
 
-#: src/Navigation.tsx:446
+#: src/Navigation.tsx:440
 msgid "Repost notifications"
 msgstr ""
 
@@ -7012,14 +6828,9 @@ msgstr "ការផ្សាយឡើងវិញនៃប្រកាសនេ
 msgid "Reposts of your reposts"
 msgstr ""
 
-#: src/Navigation.tsx:470
+#: src/Navigation.tsx:464
 msgid "Reposts of your reposts notifications"
 msgstr ""
-
-#: src/components/dialogs/ChangeEmailDialog.tsx:175
-#: src/components/dialogs/ChangeEmailDialog.tsx:182
-#~ msgid "Request change"
-#~ msgstr ""
 
 #: src/view/com/modals/ChangePassword.tsx:253
 #: src/view/com/modals/ChangePassword.tsx:255
@@ -7078,7 +6889,7 @@ msgstr "កំណត់ស្ថានភាពចាប់ផ្តើមឡើ
 msgid "Reset password"
 msgstr "កំណត់ពាក្យសម្ងាត់ឡើងវិញ"
 
-#: src/screens/Login/LoginForm.tsx:396
+#: src/screens/Login/LoginForm.tsx:442
 msgid "Retries signing in"
 msgstr ""
 
@@ -7094,8 +6905,8 @@ msgstr "ព្យាយាមម្តងទៀតនូវសកម្មភា
 #: src/components/Post/Embed/VideoEmbed/VideoEmbedInner/VideoFallback.tsx:55
 #: src/components/Post/Embed/VideoEmbed/VideoEmbedInner/VideoFallback.tsx:57
 #: src/components/StarterPack/ProfileStarterPacks.tsx:346
-#: src/screens/Login/LoginForm.tsx:395
-#: src/screens/Login/LoginForm.tsx:402
+#: src/screens/Login/LoginForm.tsx:441
+#: src/screens/Login/LoginForm.tsx:448
 #: src/screens/Messages/ChatList.tsx:254
 #: src/screens/Messages/components/MessageListError.tsx:25
 #: src/screens/Messages/Inbox.tsx:197
@@ -7170,10 +6981,6 @@ msgstr "រក្សាទុកថ្ងៃកំណើត"
 msgid "Save changes"
 msgstr "រក្សាទុកការផ្លាស់ប្តូរ"
 
-#: src/view/com/modals/EditProfile.tsx:252
-#~ msgid "Save Changes"
-#~ msgstr "រក្សាទុកការផ្លាស់ប្តូរ"
-
 #: src/components/StarterPack/ShareDialog.tsx:131
 #: src/components/StarterPack/ShareDialog.tsx:138
 msgid "Save image"
@@ -7205,10 +7012,6 @@ msgstr "មតិព័ត៌មានដែលបានរក្សាទុក
 msgid "Saved to your feeds"
 msgstr "បានរក្សាទុកទៅក្នុងមតិព័ត៌មានរបស់អ្នក"
 
-#: src/view/com/modals/EditProfile.tsx:245
-#~ msgid "Saves any changes to your profile"
-#~ msgstr "រក្សាទុកការផ្លាស់ប្តូរណាមួយចំពោះកម្រងព័ត៌មានរបស់អ្នក"
-
 #: src/view/com/modals/CropImage.web.tsx:105
 msgid "Saves image crop settings"
 msgstr "រក្សាទុកការកំណត់ការច្រឹបរូបភាព"
@@ -7238,7 +7041,7 @@ msgstr "រំកិលទៅកំពូល"
 msgid "Search"
 msgstr "ស្វែងរក"
 
-#: src/Navigation.tsx:241
+#: src/Navigation.tsx:240
 #: src/screens/Profile/ProfileSearch.tsx:37
 msgid "Search @{0}'s posts"
 msgstr ""
@@ -7315,10 +7118,6 @@ msgstr ""
 msgid "Security step required"
 msgstr ""
 
-#: src/components/dialogs/ChangeEmailDialog.tsx:57
-#~ msgid "Security Step Required"
-#~ msgstr "ជំហានសុវត្ថិភាពចាំបាច់"
-
 #: src/components/RichTextTag.tsx:111
 msgid "See {tag} posts"
 msgstr ""
@@ -7334,10 +7133,6 @@ msgstr ""
 #: src/components/RichTextTag.tsx:132
 msgid "See #{tag} posts by user"
 msgstr ""
-
-#: src/view/com/auth/SplashScreen.web.tsx:178
-#~ msgid "See jobs at Bluesky"
-#~ msgstr "មើលការងារនៅ Bluesky"
 
 #: src/view/screens/SavedFeeds.tsx:205
 msgid "See this guide"
@@ -7473,14 +7268,6 @@ msgstr ""
 msgid "Send a neat website!"
 msgstr "ផ្ញើគេហទំព័រស្អាត"
 
-#: src/components/dialogs/VerifyEmailDialog.tsx:295
-#~ msgid "Send confirmation"
-#~ msgstr ""
-
-#: src/components/dialogs/VerifyEmailDialog.tsx:288
-#~ msgid "Send confirmation email"
-#~ msgstr "ផ្ញើអ៊ីមែលបញ្ជាក់"
-
 #: src/components/dialogs/EmailDialog/screens/Manage2FA/Disable.tsx:174
 #: src/components/dialogs/EmailDialog/screens/Manage2FA/Disable.tsx:181
 #: src/components/dialogs/EmailDialog/screens/Verify.tsx:300
@@ -7566,7 +7353,7 @@ msgstr "រៀបចំគណនីរបស់អ្នក"
 msgid "Sets email for password reset"
 msgstr "កំណត់អ៊ីមែលសម្រាប់កំណត់ពាក្យសម្ងាត់ឡើងវិញ"
 
-#: src/Navigation.tsx:197
+#: src/Navigation.tsx:196
 #: src/screens/Settings/Settings.tsx:93
 #: src/view/shell/desktop/LeftNav.tsx:727
 #: src/view/shell/Drawer.tsx:572
@@ -7659,11 +7446,6 @@ msgstr ""
 msgid "Share link"
 msgstr "ចែករំលែកតំណ"
 
-#: src/view/com/modals/LinkWarning.tsx:89
-#: src/view/com/modals/LinkWarning.tsx:95
-#~ msgid "Share Link"
-#~ msgstr "ចែករំលែកតំណ"
-
 #: src/components/StarterPack/ShareDialog.tsx:68
 msgid "Share link dialog"
 msgstr "ប្រអប់ចែករំលែកតំណ"
@@ -7703,13 +7485,9 @@ msgstr ""
 msgid "Share your favorite feed!"
 msgstr "ចែករំលែកមតិព័ត៌មានដែលអ្នកចូលចិត្ត"
 
-#: src/Navigation.tsx:300
+#: src/Navigation.tsx:299
 msgid "Shared Preferences Tester"
 msgstr "កម្មវិធីសាកល្បងចំណូលចិត្តដែលបានចែករំលែក"
-
-#: src/view/com/modals/LinkWarning.tsx:92
-#~ msgid "Shares the linked website"
-#~ msgstr "ចែករំលែកគេហទំព័រដែលបានភ្ជាប់"
 
 #: src/components/moderation/ContentHider.tsx:200
 #: src/components/moderation/LabelPreference.tsx:137
@@ -7841,7 +7619,7 @@ msgstr ""
 #: src/components/dialogs/Signin.tsx:99
 #: src/screens/Login/index.tsx:123
 #: src/screens/Login/index.tsx:148
-#: src/screens/Login/LoginForm.tsx:224
+#: src/screens/Login/LoginForm.tsx:270
 #: src/view/com/auth/SplashScreen.tsx:61
 #: src/view/com/auth/SplashScreen.tsx:69
 #: src/view/com/auth/SplashScreen.web.tsx:123
@@ -7885,8 +7663,13 @@ msgstr "ចូល Bluesky ឬបង្កើតគណនីថ្មីមួយ
 msgid "Sign in to view post"
 msgstr ""
 
-#: src/screens/Login/LoginForm.tsx:415
-#: src/screens/Login/LoginForm.tsx:427
+#: src/screens/Login/LoginForm.tsx:123
+#: src/screens/Login/LoginForm.tsx:131
+msgid "Sign in was cancelled"
+msgstr ""
+
+#: src/screens/Login/LoginForm.tsx:461
+#: src/screens/Login/LoginForm.tsx:473
 msgid "Sign in with Bluesky"
 msgstr ""
 
@@ -8012,7 +7795,7 @@ msgid "Something wrong? Let us know."
 msgstr ""
 
 #: src/App.native.tsx:123
-#: src/App.web.tsx:99
+#: src/App.web.tsx:100
 msgid "Sorry! Your session expired. Please sign in again."
 msgstr ""
 
@@ -8076,12 +7859,12 @@ msgstr ""
 msgid "Start chat with {displayName}"
 msgstr "ចាប់ផ្តើមជជែកជាមួយ {displayName}"
 
-#: src/screens/Login/LoginForm.tsx:418
+#: src/screens/Login/LoginForm.tsx:464
 msgid "Start OAuth sign in with Bluesky"
 msgstr ""
 
-#: src/Navigation.tsx:552
-#: src/Navigation.tsx:557
+#: src/Navigation.tsx:546
+#: src/Navigation.tsx:551
 #: src/screens/StarterPack/Wizard/index.tsx:186
 msgid "Starter Pack"
 msgstr "កញ្ចប់ចាប់ផ្តើម"
@@ -8112,11 +7895,6 @@ msgstr "កញ្ចប់ចាប់ផ្តើម"
 msgid "Starter packs let you easily share your favorite feeds and people with your friends."
 msgstr "កញ្ចប់ចាប់ផ្តើមអនុញ្ញាតឱ្យអ្នកចែករំលែកព័ត៌មានដែលអ្នកចូលចិត្ត និងមនុស្សយ៉ាងងាយស្រួលជាមួយមិត្តភក្តិរបស់អ្នក"
 
-#: src/screens/Settings/AboutSettings.tsx:100
-#: src/screens/Settings/AboutSettings.tsx:103
-#~ msgid "Status Page"
-#~ msgstr "ទំព័រស្ថានភាព"
-
 #: src/screens/Signup/index.tsx:148
 msgid "Step {0} of {1}"
 msgstr "ជំហានទី {0} នៃ {1}"
@@ -8125,7 +7903,7 @@ msgstr "ជំហានទី {0} នៃ {1}"
 msgid "Storage cleared, you need to restart the app now."
 msgstr "កន្លែងផ្ទុកត្រូវបានសម្អាត អ្នកត្រូវចាប់ផ្តើមកម្មវិធីឡើងវិញឥឡូវនេះ"
 
-#: src/Navigation.tsx:290
+#: src/Navigation.tsx:289
 #: src/screens/Settings/Settings.tsx:403
 msgid "Storybook"
 msgstr ""
@@ -8202,7 +7980,7 @@ msgctxt "Name of app icon variant"
 msgid "Sunset"
 msgstr ""
 
-#: src/Navigation.tsx:310
+#: src/Navigation.tsx:309
 #: src/view/screens/Support.tsx:31
 #: src/view/screens/Support.tsx:34
 msgid "Support"
@@ -8289,7 +8067,7 @@ msgstr "ប្រាប់យើងបន្តិចទៀត"
 msgid "Terms"
 msgstr "លក្ខខណ្ឌ"
 
-#: src/Navigation.tsx:320
+#: src/Navigation.tsx:319
 #: src/screens/Settings/AboutSettings.tsx:90
 #: src/screens/Settings/AboutSettings.tsx:93
 #: src/view/screens/TermsOfService.tsx:31
@@ -8325,10 +8103,6 @@ msgstr "វាលបញ្ចូលអត្ថបទ"
 #: src/view/com/posts/ShowLessFollowup.tsx:39
 msgid "Thank you for your feedback! It has been sent to the feed operator."
 msgstr ""
-
-#: src/components/dialogs/VerifyEmailDialog.tsx:125
-#~ msgid "Thank you! Your email has been successfully verified."
-#~ msgstr "សូមអរគុណ! អ៊ីមែលរបស់អ្នកត្រូវបានផ្ទៀងផ្ទាត់ដោយជោគជ័យ"
 
 #: src/components/ReportDialog/SubmitView.tsx:83
 msgid "Thank you. Your report has been sent."
@@ -8397,10 +8171,6 @@ msgstr "មតិព័ត៌មាន Discover"
 #: src/state/shell/progress-guide.tsx:224
 msgid "The Discover feed now knows what you like"
 msgstr "ឥឡូវនេះផ្ទាំងព័ត៌មាន Discover ដឹងពីអ្វីដែលអ្នកចូលចិត្ត"
-
-#: src/components/dialogs/ChangeEmailDialog.tsx:74
-#~ msgid "The email address you entered is the same as your current email address."
-#~ msgstr ""
 
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:324
 msgid "The experience is better in the app. Download Bluesky now and we'll pick back up where you left off."
@@ -8732,12 +8502,6 @@ msgstr "ប្រកាសនេះត្រូវបានលុប"
 msgid "This post is only visible to logged-in users."
 msgstr ""
 
-#: src/components/PostControls/ShareMenu/ShareMenuItems.tsx:173
-#: src/components/PostControls/ShareMenu/ShareMenuItems.tsx:183
-#: src/components/PostControls/ShareMenu/ShareMenuItems.web.tsx:167
-#~ msgid "This post is only visible to logged-in users. It won't be visible to people who aren't signed in."
-#~ msgstr ""
-
 #: src/components/PostControls/PostMenu/PostMenuItems.tsx:709
 msgid "This post will be hidden from feeds and threads. This cannot be undone."
 msgstr "ប្រកាសនេះនឹងត្រូវបានលាក់ពីមតិព័ត៌មាន និងខ្សែស្រលាយ។ នេះមិនអាចត្រឡប់វិញបានទេ"
@@ -8839,7 +8603,7 @@ msgstr ""
 msgid "Threaded mode"
 msgstr ""
 
-#: src/Navigation.tsx:363
+#: src/Navigation.tsx:357
 msgid "Threads Preferences"
 msgstr ""
 
@@ -8901,7 +8665,7 @@ msgstr "កំពូល"
 msgid "Top replies first"
 msgstr ""
 
-#: src/Navigation.tsx:522
+#: src/Navigation.tsx:516
 msgid "Topic"
 msgstr ""
 
@@ -8970,7 +8734,7 @@ msgstr "មិនអាចភ្ជាប់បានទេ។ សូមពិ�
 
 #: src/screens/Login/ForgotPasswordForm.tsx:68
 #: src/screens/Login/index.tsx:80
-#: src/screens/Login/LoginForm.tsx:211
+#: src/screens/Login/LoginForm.tsx:257
 #: src/screens/Login/SetNewPasswordForm.tsx:81
 #: src/screens/Signup/index.tsx:72
 #: src/view/com/modals/ChangePassword.tsx:71
@@ -8982,7 +8746,7 @@ msgstr "មិនអាចទាក់ទងសេវាកម្មរបស់
 msgid "Unable to delete"
 msgstr "មិនអាចលុបបានទេ"
 
-#: src/screens/Login/LoginForm.tsx:176
+#: src/screens/Login/LoginForm.tsx:217
 msgid "Unable to find your account. Please check your username or handle and try again."
 msgstr ""
 
@@ -9336,11 +9100,11 @@ msgctxt "toast"
 msgid "User list updated"
 msgstr "ធ្វើបច្ចុប្បន្នភាពបញ្ជីអ្នកប្រើប្រាស់"
 
-#: src/screens/Login/LoginForm.tsx:250
+#: src/screens/Login/LoginForm.tsx:296
 msgid "Username or email address"
 msgstr "ឈ្មោះអ្នកប្រើប្រាស់ ឬអាសយដ្ឋានអ៊ីមែល"
 
-#: src/screens/Login/LoginForm.tsx:249
+#: src/screens/Login/LoginForm.tsx:295
 msgid "Username or handle"
 msgstr ""
 
@@ -9377,7 +9141,7 @@ msgstr ""
 msgid "Verification settings"
 msgstr ""
 
-#: src/Navigation.tsx:190
+#: src/Navigation.tsx:189
 #: src/screens/Moderation/VerificationSettings.tsx:32
 msgid "Verification Settings"
 msgstr ""
@@ -9407,11 +9171,6 @@ msgstr ""
 msgid "Verify DNS Record"
 msgstr "ផ្ទៀងផ្ទាត់ DNS Record"
 
-#: src/components/dialogs/ChangeEmailDialog.tsx:234
-#: src/components/dialogs/ChangeEmailDialog.tsx:240
-#~ msgid "Verify email"
-#~ msgstr ""
-
 #: src/components/dialogs/EmailDialog/screens/Verify.tsx:214
 msgid "Verify email code"
 msgstr ""
@@ -9435,10 +9194,6 @@ msgstr ""
 msgid "Verify your email"
 msgstr "ផ្ទៀងផ្ទាត់អ៊ីមែលរបស់អ្នក"
 
-#: src/components/dialogs/VerifyEmailDialog.tsx:114
-#~ msgid "Verify Your Email"
-#~ msgstr "ផ្ទៀងផ្ទាត់អ៊ីមែលរបស់អ្នក"
-
 #: src/screens/Settings/AboutSettings.tsx:132
 #: src/screens/Settings/AboutSettings.tsx:161
 msgid "Version {appVersion}"
@@ -9453,7 +9208,7 @@ msgstr "វីដេអូ"
 msgid "Video failed to process"
 msgstr "វីដេអូបានបរាជ័យក្នុងដំណើរការ"
 
-#: src/Navigation.tsx:573
+#: src/Navigation.tsx:567
 msgid "Video Feed"
 msgstr ""
 
@@ -9622,11 +9377,6 @@ msgstr ""
 msgid "Visit site"
 msgstr ""
 
-#: src/view/com/modals/LinkWarning.tsx:89
-#: src/view/com/modals/LinkWarning.tsx:95
-#~ msgid "Visit Site"
-#~ msgstr "ទស្សនាគេហទំព័រ"
-
 #: src/view/screens/Notifications.tsx:303
 msgid "Visit your notification settings"
 msgstr ""
@@ -9639,7 +9389,7 @@ msgstr "កម្រិតសំឡេង"
 msgid "Waiting for signature..."
 msgstr ""
 
-#: src/Navigation.tsx:340
+#: src/Navigation.tsx:339
 #: src/screens/Settings/PrivacyAndSecuritySettings.tsx:77
 #: src/screens/Settings/PrivacyAndSecuritySettings.tsx:80
 #: src/screens/Settings/WalletSettings.tsx:113
@@ -10249,10 +9999,6 @@ msgstr "អ្នកនឹងធ្វើតាមមនុស្សទាំង
 msgid "You'll follow these people right away"
 msgstr "អ្នកនឹងធ្វើតាមមនុស្សទាំងនេះភ្លាមៗ"
 
-#: src/components/dialogs/VerifyEmailDialog.tsx:216
-#~ msgid "You'll receive an email at <0>{0}</0> to verify it's you."
-#~ msgstr "អ្នកនឹងទទួលបានអ៊ីមែលនៅ <0>{0}</0> ដើម្បីផ្ទៀងផ្ទាត់ថាជាអ្នក"
-
 #: src/screens/StarterPack/StarterPackLandingScreen.tsx:274
 msgid "You'll stay updated with these feeds"
 msgstr "អ្នកនឹងបន្តធ្វើបច្ចុប្បន្នភាពជាមួយព័ត៌មានទាំងនេះ"
@@ -10347,10 +10093,6 @@ msgstr ""
 msgid "Your current handle <0>{0}</0> will automatically remain reserved for you. You can switch back to it at any time from this account."
 msgstr ""
 
-#: src/components/dialogs/ChangeEmailDialog.tsx:65
-#~ msgid "Your email address has been updated but it is not yet verified. As a next step, please verify your new email."
-#~ msgstr ""
-
 #: src/screens/Login/ForgotPasswordForm.tsx:51
 #: src/screens/Signup/state.ts:270
 #: src/screens/Signup/StepInfo/index.tsx:98
@@ -10361,10 +10103,6 @@ msgstr "អ៊ីមែលរបស់អ្នកហាក់ដូចជាម
 #: src/components/dialogs/EmailDialog/screens/VerificationReminder.tsx:65
 msgid "Your email has not yet been verified. Please verify your email in order to enjoy all the features of Bluesky."
 msgstr ""
-
-#: src/components/dialogs/VerifyEmailDialog.tsx:110
-#~ msgid "Your email has not yet been verified. This is an important security step which we recommend."
-#~ msgstr "អ៊ីមែលរបស់អ្នកមិនទាន់ត្រូវបានផ្ទៀងផ្ទាត់នៅឡើយ។ នេះគឺជាជំហានសុវត្ថិភាពដ៏សំខាន់មួយដែលយើងណែនាំ"
 
 #: src/components/dialogs/WalletConnectionDialog.tsx:87
 msgid "Your Ethereum wallet has been successfully added to your profile."
@@ -10390,7 +10128,7 @@ msgstr "ចំណុចទាញពេញលេញរបស់អ្នកនឹ
 msgid "Your full username will be <0>@{0}</0>"
 msgstr ""
 
-#: src/Navigation.tsx:494
+#: src/Navigation.tsx:488
 #: src/screens/Search/modules/ExploreInterestsCard.tsx:67
 #: src/screens/Settings/ContentAndMediaSettings.tsx:92
 #: src/screens/Settings/ContentAndMediaSettings.tsx:95
