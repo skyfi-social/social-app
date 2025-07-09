@@ -15,6 +15,7 @@ import {
   PUBLIC_BSKY_SERVICE,
   TIMELINE_SAVED_FEED,
 } from '#/lib/constants'
+import {initializedOAuthClient} from '#/lib/oauth'
 import {tryFetchGates} from '#/lib/statsig/statsig'
 import {getAge} from '#/lib/strings/time'
 import {logger} from '#/logger'
@@ -203,8 +204,7 @@ export async function createAgentAndResumeOAuth(
 
   try {
     // Import OAuth client to get the stored session
-    const {initOAuthClient} = await import('#/lib/oauth')
-    const oauthClient = await initOAuthClient()
+    const oauthClient = await initializedOAuthClient()
 
     // Try to get the OAuth session for this DID from the OAuth client
     console.log('🔍 Getting OAuth session from client...')

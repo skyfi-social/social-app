@@ -1,8 +1,9 @@
-import {AtpSessionEvent} from '@atproto/api'
+import {type AtpSessionEvent} from '@atproto/api'
 
+import {initializedOAuthClient} from '#/lib/oauth'
 import {createPublicAgent} from './agent'
 import {wrapSessionReducerForLogging} from './logging'
-import {SessionAccount} from './types'
+import {type SessionAccount} from './types'
 
 // A hack so that the reducer can't read anything from the agent.
 // From the reducer's point of view, it should be a completely opaque object.
@@ -143,6 +144,14 @@ let reducer = (state: State, action: Action): State => {
     }
     case 'logged-out-current-account': {
       const {currentAgentState} = state
+
+      if (currentAgentState.did) {
+        state.accounts.find(a => a.did === currentAgentState.did) &&
+          initializedOAuthClient().then(client =>
+            client.revoke(currentAgentState.did!),
+          )
+      }
+
       return {
         accounts: state.accounts.map(a =>
           a.did === currentAgentState.did
@@ -158,6 +167,15 @@ let reducer = (state: State, action: Action): State => {
       }
     }
     case 'logged-out-every-account': {
+      // call oauthClient.revoke on each oath-managed account
+      initializedOAuthClient().then(client => {
+        const revokePromises = state.accounts
+          .filter(a => a.accessJwt === 'oauth-managed')
+          .map(a => client.revoke(a.did))
+
+        return Promise.all(revokePromises)
+      })
+
       return {
         accounts: state.accounts.map(a => ({
           ...a,

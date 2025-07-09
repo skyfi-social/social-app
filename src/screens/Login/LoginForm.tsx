@@ -127,9 +127,7 @@ export const LoginForm = ({
 
           const errMsg = (oauthError as Error).toString()
 
-          if ((oauthError as Error).message === 'OAUTH_CANCELLED') {
-            setError(_(msg`Sign in was cancelled`))
-          } else if (errMsg.includes('Invalid handle')) {
+          if (errMsg.includes('Invalid handle')) {
             setError(
               _(msg`Invalid handle. Please check your username and try again.`),
             )

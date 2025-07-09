@@ -62,7 +62,6 @@ import {Provider as ActiveVideoProvider} from '#/components/Post/Embed/VideoEmbe
 import {Provider as VideoVolumeProvider} from '#/components/Post/Embed/VideoEmbed/VideoVolumeContext'
 import {BackgroundNotificationPreferencesProvider} from '../modules/expo-background-notification-handler/src/BackgroundNotificationHandlerProvider'
 import {Provider as HideBottomBarBorderProvider} from './lib/hooks/useHideBottomBarBorder'
-import {initOAuthClient} from './lib/oauth'
 
 /**
  * Begin geolocation ASAP
@@ -170,15 +169,9 @@ function App() {
   const [isReady, setReady] = useState(false)
 
   React.useEffect(() => {
-    Promise.all([
-      initPersistedState(),
-      ensureGeolocationResolved(),
-      initOAuthClient().catch(error => {
-        // OAuth client initialization is not critical for app startup
-        // Log error but don't block app initialization
-        console.warn('OAuth client initialization failed:', error)
-      }),
-    ]).then(() => setReady(true))
+    Promise.all([initPersistedState(), ensureGeolocationResolved()]).then(() =>
+      setReady(true),
+    )
   }, [])
 
   if (!isReady) {
