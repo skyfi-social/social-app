@@ -95,6 +95,8 @@ export async function initOAuthClient(): Promise<BrowserOAuthClient> {
 export async function startOAuthLogin(
   handle: string,
 ): Promise<OAuthSession | null> {
+  console.log('🔧 Production OAuth config:', getClientMetadata())
+
   const client = new BrowserOAuthClient({
     clientMetadata: getClientMetadata(),
     handleResolver: 'https://bsky.social',
@@ -127,9 +129,15 @@ export async function startOAuthLogin(
 
   // Pass and Abort Controller to allow cancellation and that logs a warning if the popup is closed
   // Use popup flow instead of redirect
-  const result = await client.signInPopup(handle, {
-    prompt: 'login',
-  })
-
-  return result
+  try {
+    console.log('🚀 Starting signInPopup...')
+    const result = await client.signInPopup(handle, {
+      prompt: 'login',
+    })
+    console.log('✅ signInPopup result:', result)
+    return result
+  } catch (error) {
+    console.error('❌ signInPopup failed:', error)
+    throw error
+  }
 }
