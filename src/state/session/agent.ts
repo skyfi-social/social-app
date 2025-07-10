@@ -15,7 +15,7 @@ import {
   PUBLIC_BSKY_SERVICE,
   TIMELINE_SAVED_FEED,
 } from '#/lib/constants'
-import {initializedOAuthClient} from '#/lib/oauth'
+import {getOAuthClient} from '#/lib/oauth'
 import {tryFetchGates} from '#/lib/statsig/statsig'
 import {getAge} from '#/lib/strings/time'
 import {logger} from '#/logger'
@@ -204,7 +204,7 @@ export async function createAgentAndResumeOAuth(
 
   try {
     // Import OAuth client to get the stored session
-    const oauthClient = await initializedOAuthClient()
+    const oauthClient = await getOAuthClient()
 
     // Try to get the OAuth session for this DID from the OAuth client
     console.log('🔍 Getting OAuth session from client...')
@@ -294,6 +294,37 @@ export async function createAgentAndLoginOAuth(
       stack: error.stack?.split('\n').slice(0, 5).join('\n'),
     })
     throw error
+  }
+}
+
+/**
+ * Initialize OAuth client and handle any existing session on app startup
+ * Returns the session account if OAuth session was found and processed
+ */
+export async function initializeOAuthSession(): Promise<SessionAccount | null> {
+  try {
+    console.log('🔧 Initializing OAuth client and checking for session...')
+    const client = await getOAuthClient()
+    const result = await client.init()
+
+    if (result?.session) {
+      console.log(
+        '✅ OAuth session found during initialization:',
+        result.session.sub,
+      )
+
+      // Create session account from OAuth session
+      const account = await oauthSessionToAccount(result.session)
+      console.log('✅ OAuth session converted to account:', account.did)
+
+      return account
+    } else {
+      console.log('ℹ️ No OAuth session found during initialization')
+      return null
+    }
+  } catch (error) {
+    console.error('❌ OAuth initialization failed in session agent:', error)
+    return null
   }
 }
 

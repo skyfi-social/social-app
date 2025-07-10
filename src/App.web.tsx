@@ -168,11 +168,9 @@ function InnerApp() {
 function App() {
   const [isReady, setReady] = useState(false)
 
-  React.useEffect(() => {
-    Promise.all([initPersistedState(), ensureGeolocationResolved()]).then(() =>
-      setReady(true),
-    )
-  }, [])
+  Promise.all([initPersistedState(), ensureGeolocationResolved()]).then(() =>
+    setReady(true),
+  )
 
   if (!isReady) {
     return null

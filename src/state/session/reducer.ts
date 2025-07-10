@@ -1,7 +1,7 @@
 import {type AtpSessionEvent} from '@atproto/api'
 
-import {initializedOAuthClient} from '#/lib/oauth'
-import {createPublicAgent} from './agent'
+import {getOAuthClient} from '#/lib/oauth'
+import {createPublicAgent, initializeOAuthSession} from './agent'
 import {wrapSessionReducerForLogging} from './logging'
 import {type SessionAccount} from './types'
 
@@ -53,6 +53,10 @@ export type Action =
       syncedAccounts: SessionAccount[]
       syncedCurrentDid: string | undefined
     }
+  | {
+      type: 'oauth-session-found'
+      account: SessionAccount
+    }
 
 function createPublicAgentState(): AgentState {
   return {
@@ -61,11 +65,39 @@ function createPublicAgentState(): AgentState {
   }
 }
 
-export function getInitialState(persistedAccounts: SessionAccount[]): State {
+export async function getInitialState(
+  persistedAccounts: SessionAccount[],
+): Promise<{
+  state: State
+  oauthAccount: SessionAccount | null
+}> {
+  // Check for OAuth session first
+  const oauthAccount = await initializeOAuthSession()
+
+  let accounts = persistedAccounts
+  if (oauthAccount) {
+    // Check if this account already exists
+    const existingAccountIndex = accounts.findIndex(
+      a => a.did === oauthAccount.did,
+    )
+    if (existingAccountIndex >= 0) {
+      // Update existing account with OAuth info
+      accounts = accounts.map((account, index) =>
+        index === existingAccountIndex ? oauthAccount : account,
+      )
+    } else {
+      // Add new OAuth account
+      accounts = [...accounts, oauthAccount]
+    }
+  }
+
   return {
-    accounts: persistedAccounts,
-    currentAgentState: createPublicAgentState(),
-    needsPersist: false,
+    state: {
+      accounts,
+      currentAgentState: createPublicAgentState(),
+      needsPersist: !!oauthAccount, // Need to persist if we found an OAuth account
+    },
+    oauthAccount,
   }
 }
 
@@ -147,9 +179,7 @@ let reducer = (state: State, action: Action): State => {
 
       if (currentAgentState.did) {
         state.accounts.find(a => a.did === currentAgentState.did) &&
-          initializedOAuthClient().then(client =>
-            client.revoke(currentAgentState.did!),
-          )
+          getOAuthClient().then(client => client.revoke(currentAgentState.did!))
       }
 
       return {
@@ -168,7 +198,7 @@ let reducer = (state: State, action: Action): State => {
     }
     case 'logged-out-every-account': {
       // call oauthClient.revoke on each oath-managed account
-      initializedOAuthClient().then(client => {
+      getOAuthClient().then(client => {
         const revokePromises = state.accounts
           .filter(a => a.accessJwt === 'oauth-managed')
           .map(a => client.revoke(a.did))
@@ -196,6 +226,30 @@ let reducer = (state: State, action: Action): State => {
             ? state.currentAgentState
             : createPublicAgentState(), // Log out if different user.
         needsPersist: false, // Synced from another tab. Don't persist to avoid cycles.
+      }
+    }
+    case 'oauth-session-found': {
+      const {account} = action
+      const existingAccountIndex = state.accounts.findIndex(
+        a => a.did === account.did,
+      )
+
+      if (existingAccountIndex >= 0) {
+        // Update existing account
+        return {
+          ...state,
+          accounts: state.accounts.map((a, index) =>
+            index === existingAccountIndex ? account : a,
+          ),
+          needsPersist: true,
+        }
+      } else {
+        // Add new account
+        return {
+          ...state,
+          accounts: [...state.accounts, account],
+          needsPersist: true,
+        }
       }
     }
   }

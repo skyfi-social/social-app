@@ -22,10 +22,10 @@ const getClientMetadata = (): OAuthClientMetadataInput => {
     // Add 'transition:email' scope for email verification.
     // To encourage more people to try Skyfi in the early days we
     // won't ask for this access. Maybe after we build some brand trust.
-    const devClientMetadata: string = `http://localhost?redirect_uri=${encodeURIComponent('http://127.0.0.1:19006/oauth/callback')}&scope=${encodeURIComponent('atproto transition:generic')}`
+    const devClientMetadata: string = `http://localhost?redirect_uri=${encodeURIComponent('http://127.0.0.1:19006')}&scope=${encodeURIComponent('atproto transition:generic')}`
     return {
       client_id: devClientMetadata,
-      redirect_uris: [`http://127.0.0.1:19006/oauth/callback`],
+      redirect_uris: [`http://127.0.0.1:19006`],
       scope: 'atproto transition:generic',
       grant_types: ['authorization_code', 'refresh_token'],
       response_types: ['code'],
@@ -39,7 +39,7 @@ const getClientMetadata = (): OAuthClientMetadataInput => {
       client_id: 'https://app.skyfi.social/client-metadata.json',
       client_name: 'Skyfi',
       client_uri: 'https://app.skyfi.social',
-      redirect_uris: ['https://app.skyfi.social/oauth/callback'],
+      redirect_uris: ['https://app.skyfi.social'],
       scope: 'atproto transition:generic',
       grant_types: ['authorization_code', 'refresh_token'],
       response_types: ['code'],
@@ -53,9 +53,9 @@ const getClientMetadata = (): OAuthClientMetadataInput => {
 let oauthClient: BrowserOAuthClient | null = null
 
 /**
- * Initialize the OAuth client (web only)
+ * Get or create the OAuth client (web only)
  */
-export async function initializedOAuthClient(): Promise<BrowserOAuthClient> {
+export async function getOAuthClient(): Promise<BrowserOAuthClient> {
   if (!isWeb) {
     throw new Error('OAuth client is only available on web platform')
   }
@@ -73,11 +73,7 @@ export async function initializedOAuthClient(): Promise<BrowserOAuthClient> {
         handleResolver: 'https://bsky.social',
       })
 
-      const result = await oauthClient.init()
-
-      console.log('✅ OAuth client created successfully: ', result)
-      // pause 5 seconds
-      await new Promise(resolve => setTimeout(resolve, 15000))
+      console.log('✅ OAuth client created successfully')
     } catch (error) {
       console.error('❌ Failed to create OAuth client:', error)
       throw error
@@ -89,6 +85,24 @@ export async function initializedOAuthClient(): Promise<BrowserOAuthClient> {
 }
 
 /**
+ * Initialize the OAuth client and return any existing session (web only)
+ */
+export async function initializedOAuthClient(): Promise<{
+  session?: OAuthSession
+} | null> {
+  const client = await getOAuthClient()
+
+  try {
+    const result = await client.init()
+    console.log('✅ OAuth client initialized:', result)
+    return result
+  } catch (error) {
+    console.error('❌ OAuth client initialization failed:', error)
+    throw error
+  }
+}
+
+/**
  * Start OAuth login flow using popup (web only)
  */
 export async function startOAuthLogin(
@@ -96,7 +110,7 @@ export async function startOAuthLogin(
 ): Promise<OAuthSession | null> {
   console.log('🔧 Production OAuth config:', getClientMetadata())
 
-  const client = await initializedOAuthClient()
+  const client = await getOAuthClient()
 
   // The @atproto/oauth-client-browser signInPopup method is popping up the window and not closing it if
   // the the handle is not valid. So we need to pre-validate the handle. Remove this when the library is fixed.

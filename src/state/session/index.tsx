@@ -14,6 +14,7 @@ import {
   createAgentAndLoginOAuth,
   createAgentAndResume,
   createAgentAndResumeOAuth,
+  createPublicAgent,
   sessionAccountToSession,
 } from './agent'
 import {getInitialState, reducer} from './reducer'
@@ -48,7 +49,16 @@ const ApiContext = React.createContext<SessionApiContext>({
 export function Provider({children}: React.PropsWithChildren<{}>) {
   const cancelPendingTask = useOneTaskAtATime()
   const [state, dispatch] = React.useReducer(reducer, null, () => {
-    const initialState = getInitialState(persisted.get('session').accounts)
+    // Return initial state synchronously - OAuth initialization will happen in effect
+    const persistedAccounts = persisted.get('session').accounts
+    const initialState = {
+      accounts: persistedAccounts,
+      currentAgentState: {
+        agent: createPublicAgent(),
+        did: undefined,
+      },
+      needsPersist: false,
+    }
     addSessionDebugLog({type: 'reducer:init', state: initialState})
     return initialState
   })
@@ -358,6 +368,38 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
       prevAgent.dispose()
     }
   }, [agent])
+
+  // Initialize OAuth session asynchronously
+  React.useEffect(() => {
+    const initOAuth = async () => {
+      try {
+        const {oauthAccount} = await getInitialState(
+          persisted.get('session').accounts,
+        )
+
+        if (oauthAccount) {
+          console.log(
+            '🔄 OAuth account found, updating state:',
+            oauthAccount.did,
+          )
+          dispatch({
+            type: 'oauth-session-found',
+            account: oauthAccount,
+          })
+
+          // Resume the OAuth session to set hasSession = true
+          await resumeSession(oauthAccount)
+        }
+      } catch (error) {
+        console.error(
+          '❌ OAuth initialization failed in sesssion index:',
+          error,
+        )
+      }
+    }
+
+    initOAuth()
+  }, [resumeSession])
 
   return (
     <AgentContext.Provider value={agent}>
