@@ -40,6 +40,7 @@ import {
   useSession,
   useSessionApi,
 } from '#/state/session'
+import {initializeOAuthSession} from '#/state/session/agent'
 import {readLastActiveAccount} from '#/state/session/util'
 import {Provider as ShellStateProvider} from '#/state/shell'
 import {Provider as ComposerProvider} from '#/state/shell/composer'
@@ -82,6 +83,26 @@ function InnerApp() {
       try {
         if (account) {
           await resumeSession(account)
+        } else {
+          // No stored account, check for OAuth callback session
+          try {
+            const oauthAccount = await initializeOAuthSession()
+            if (oauthAccount) {
+              console.log(
+                '🔄 OAuth account found, resuming session:',
+                oauthAccount.did,
+              )
+              await resumeSession(oauthAccount)
+            }
+          } catch (oauthError) {
+            // Show error toast for OAuth failures
+            console.log('🚨 OAuth authentication failed:', oauthError.message)
+
+            // Use setTimeout to ensure Toast system is ready
+            setTimeout(() => {
+              Toast.show(oauthError.message, 'info')
+            }, 100)
+          }
         }
       } catch (e) {
         logger.error(`session: resumeSession failed`, {message: e})

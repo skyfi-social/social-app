@@ -6,9 +6,8 @@ import {
 
 import {isWeb} from '#/platform/detection'
 
-// Client metadata that should be served at /client-metadata.json
+// Client metadata that should be served at /client-metadata.json (public/client-metadata.json contains production config that must match this)
 const getClientMetadata = (): OAuthClientMetadataInput => {
-  // Check if we're running in development mode
   const isDev =
     process.env.NODE_ENV === 'development' ||
     window.location.hostname === 'localhost' ||
@@ -16,7 +15,7 @@ const getClientMetadata = (): OAuthClientMetadataInput => {
 
   if (isDev) {
     // Development configuration for AT Protocol OAuth
-    // For development, we use a special client_id format with redirect_uri as query param
+    // For development, we use a special client_id format with cfg as query params
 
     // Add 'transition:chat.bsky' scope for access to chats.
     // Add 'transition:email' scope for email verification.
@@ -53,7 +52,7 @@ const getClientMetadata = (): OAuthClientMetadataInput => {
 let oauthClient: BrowserOAuthClient | null = null
 
 /**
- * Get or create the OAuth client (web only)
+ * Get OAuth client creates on first call(web only)
  */
 export async function getOAuthClient(): Promise<BrowserOAuthClient> {
   if (!isWeb) {
@@ -61,45 +60,17 @@ export async function getOAuthClient(): Promise<BrowserOAuthClient> {
   }
 
   if (!oauthClient) {
-    console.log(
-      '🔧 Creating OAuth client with configuration:',
-      getClientMetadata(),
-    )
-
     try {
-      // Use the client metadata from our deployed URL
       oauthClient = new BrowserOAuthClient({
         clientMetadata: getClientMetadata(),
         handleResolver: 'https://bsky.social',
       })
-
-      console.log('✅ OAuth client created successfully')
     } catch (error) {
       console.error('❌ Failed to create OAuth client:', error)
       throw error
     }
-  } else {
-    console.log('♻️ Reusing existing OAuth client instance')
   }
   return oauthClient
-}
-
-/**
- * Initialize the OAuth client and return any existing session (web only)
- */
-export async function initializedOAuthClient(): Promise<{
-  session?: OAuthSession
-} | null> {
-  const client = await getOAuthClient()
-
-  try {
-    const result = await client.init()
-    console.log('✅ OAuth client initialized:', result)
-    return result
-  } catch (error) {
-    console.error('❌ OAuth client initialization failed:', error)
-    throw error
-  }
 }
 
 /**
@@ -137,17 +108,13 @@ export async function startOAuthLogin(
     throw validationError
   }
 
-  // Pass and Abort Controller to allow cancellation and that logs a warning if the popup is closed
-  // Use popup flow instead of redirect
   try {
-    console.log('🚀 Starting signInPopup...')
     const result = await client.signIn(handle, {
       prompt: 'login',
     })
-    console.log('✅ signInPopup result:', result)
     return result
   } catch (error) {
-    console.error('❌ signInPopup failed:', error)
+    console.error('❌ signIn failed:', error)
     throw error
   }
 }

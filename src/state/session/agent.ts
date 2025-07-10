@@ -324,7 +324,22 @@ export async function initializeOAuthSession(): Promise<SessionAccount | null> {
     }
   } catch (error) {
     console.error('❌ OAuth initialization failed in session agent:', error)
-    return null
+
+    // BrowserOAuthClient.init() throws errors when OAuth callback fails
+    // Extract user-friendly error message and re-throw for App.web.tsx to handle
+    const errorMessage =
+      error instanceof Error ? error.message : 'Authentication failed'
+    let userMessage = 'Sign in was cancelled or failed. Please try again.'
+
+    if (errorMessage.includes('user rejected')) {
+      userMessage =
+        'Sign in was cancelled. Please try again if you want to continue.'
+    } else if (errorMessage.includes('Invalid handle')) {
+      userMessage = 'Invalid username or handle. Please check and try again.'
+    }
+
+    // Re-throw with user-friendly message for App.web.tsx to catch
+    throw new Error(userMessage)
   }
 }
 
